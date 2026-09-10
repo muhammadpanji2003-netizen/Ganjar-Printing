@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fafc"/><stop offset="1" stop-color="#e8ebef"/></linearGradient></defs>
+<rect width="1200" height="800" fill="url(#g)"/>
+<circle cx="1040" cy="120" r="190" fill="#00a6df" opacity=".10"/><circle cx="1100" cy="240" r="150" fill="#e91e8f" opacity=".10"/><circle cx="1000" cy="340" r="120" fill="#ffd21f" opacity=".14"/>
+<rect x="150" y="120" width="900" height="560" rx="38" fill="white" stroke="#e5e7eb" stroke-width="3"/>
+<rect x="150" y="120" width="18" height="560" rx="9" fill="#111827"/>
+<rect x="168" y="120" width="9" height="560" fill="#00a6df"/><rect x="177" y="120" width="9" height="560" fill="#e91e8f"/><rect x="186" y="120" width="9" height="560" fill="#ffd21f"/>
+<text x="235" y="270" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" fill="#6b7280" letter-spacing="5">GANJAR PRINTING</text>
+<text x="235" y="370" font-family="Arial,Helvetica,sans-serif" font-size="76" font-weight="900" fill="#0f172a">BANNER</text>
+<text x="235" y="455" font-family="Arial,Helvetica,sans-serif" font-size="56" font-weight="700" fill="#0f172a">PROMO BESAR</text>
+<text x="235" y="545" font-family="Arial,Helvetica,sans-serif" font-size="27" fill="#6b7280">Cetak full color • outdoor</text>
+<line x1="235" y1="590" x2="515" y2="590" stroke="#111827" stroke-width="5"/><circle cx="545" cy="590" r="8" fill="#00a6df"/><circle cx="575" cy="590" r="8" fill="#e91e8f"/><circle cx="605" cy="590" r="8" fill="#ffd21f"/>
+</svg>

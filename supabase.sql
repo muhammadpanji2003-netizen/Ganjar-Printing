@@ -1,4 +1,5 @@
--- Jalankan file ini di Supabase > SQL Editor.
+-- GANJAR PRINTING V1.3
+-- Jalankan seluruh file ini di Supabase > SQL Editor.
 create extension if not exists pgcrypto;
 
 create table if not exists public.products (
@@ -30,28 +31,63 @@ create table if not exists public.orders (
   created_at timestamptz default now()
 );
 
+-- Hanya user yang UUID-nya ada di tabel ini yang dianggap sebagai admin.
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz default now()
+);
+
 alter table public.products enable row level security;
 alter table public.orders enable row level security;
+alter table public.admin_users enable row level security;
 
--- Produk dapat dilihat semua pengunjung, tetapi hanya akun admin yang login dapat mengubahnya.
+-- Fungsi keamanan yang dipakai seluruh policy admin.
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists(select 1 from public.admin_users a where a.user_id = auth.uid());
+$$;
+grant execute on function public.is_admin() to anon, authenticated;
+
+-- Admin hanya boleh melihat record admin miliknya sendiri.
+drop policy if exists "admin self read" on public.admin_users;
+create policy "admin self read" on public.admin_users
+for select to authenticated using (user_id = auth.uid());
+
+-- Katalog publik hanya melihat produk aktif. Admin boleh melihat semuanya.
 drop policy if exists "products public read" on public.products;
-create policy "products public read" on public.products for select using (active = true or auth.role() = 'authenticated');
+create policy "products public read" on public.products
+for select using (active = true or public.is_admin());
+
 drop policy if exists "products admin insert" on public.products;
-create policy "products admin insert" on public.products for insert to authenticated with check (true);
+create policy "products admin insert" on public.products
+for insert to authenticated with check (public.is_admin());
+
 drop policy if exists "products admin update" on public.products;
-create policy "products admin update" on public.products for update to authenticated using (true) with check (true);
+create policy "products admin update" on public.products
+for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
 drop policy if exists "products admin delete" on public.products;
-create policy "products admin delete" on public.products for delete to authenticated using (true);
+create policy "products admin delete" on public.products
+for delete to authenticated using (public.is_admin());
 
--- Customer boleh membuat pesanan. Daftar semua pesanan hanya bisa dibaca admin.
+-- Customer boleh membuat pesanan, tapi daftar pesanan hanya admin yang dapat melihat/mengubah.
 drop policy if exists "orders public insert" on public.orders;
-create policy "orders public insert" on public.orders for insert to anon, authenticated with check (true);
-drop policy if exists "orders admin read" on public.orders;
-create policy "orders admin read" on public.orders for select to authenticated using (true);
-drop policy if exists "orders admin update" on public.orders;
-create policy "orders admin update" on public.orders for update to authenticated using (true) with check (true);
+create policy "orders public insert" on public.orders
+for insert to anon, authenticated with check (true);
 
--- Tracking hanya mengembalikan pesanan yang kode-nya persis cocok.
+drop policy if exists "orders admin read" on public.orders;
+create policy "orders admin read" on public.orders
+for select to authenticated using (public.is_admin());
+
+drop policy if exists "orders admin update" on public.orders;
+create policy "orders admin update" on public.orders
+for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
 create or replace function public.track_order(order_code text)
 returns table (
  id uuid, code text, customer_name text, whatsapp text, fulfillment text,
@@ -64,23 +100,23 @@ as $$
 $$;
 grant execute on function public.track_order(text) to anon, authenticated;
 
--- Storage buckets.
 insert into storage.buckets (id,name,public) values ('catalog','catalog',true) on conflict (id) do nothing;
 insert into storage.buckets (id,name,public) values ('designs','designs',true) on conflict (id) do nothing;
 
--- Foto katalog: publik dibaca, hanya admin upload/edit/hapus.
 drop policy if exists "catalog public read" on storage.objects;
 create policy "catalog public read" on storage.objects for select using (bucket_id='catalog');
 drop policy if exists "catalog admin upload" on storage.objects;
-create policy "catalog admin upload" on storage.objects for insert to authenticated with check (bucket_id='catalog');
+create policy "catalog admin upload" on storage.objects for insert to authenticated with check (bucket_id='catalog' and public.is_admin());
 drop policy if exists "catalog admin update" on storage.objects;
-create policy "catalog admin update" on storage.objects for update to authenticated using (bucket_id='catalog');
+create policy "catalog admin update" on storage.objects for update to authenticated using (bucket_id='catalog' and public.is_admin());
 drop policy if exists "catalog admin delete" on storage.objects;
-create policy "catalog admin delete" on storage.objects for delete to authenticated using (bucket_id='catalog');
+create policy "catalog admin delete" on storage.objects for delete to authenticated using (bucket_id='catalog' and public.is_admin());
 
--- File desain customer dapat di-upload oleh pengunjung. Pada V1 bucket dibuat public agar admin bisa membuka link dari dashboard.
--- Untuk produksi skala besar, sebaiknya ubah menjadi private bucket + signed URL.
 drop policy if exists "design public upload" on storage.objects;
 create policy "design public upload" on storage.objects for insert to anon, authenticated with check (bucket_id='designs');
 drop policy if exists "design public read" on storage.objects;
 create policy "design public read" on storage.objects for select using (bucket_id='designs');
+
+-- SETELAH membuat user admin di Supabase Authentication > Users,
+-- copy UUID user tersebut lalu jalankan satu kali perintah ini dengan UUID asli:
+-- insert into public.admin_users(user_id) values ('PASTE-UUID-ADMIN-DI-SINI');

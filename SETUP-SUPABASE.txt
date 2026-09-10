@@ -1,0 +1,25 @@
+GANJAR PRINTING V1.3 — AKTIFKAN ADMIN
+
+1. Buat project di Supabase.
+2. Supabase > SQL Editor > New query.
+3. Copy seluruh isi file supabase.sql lalu Run.
+4. Supabase > Authentication > Users > Add user.
+5. Buat email + password admin Anda.
+6. Copy UUID user yang baru dibuat.
+7. Kembali ke SQL Editor, jalankan:
+
+   insert into public.admin_users(user_id)
+   values ('UUID-USER-ADMIN-ANDA');
+
+8. Supabase > Project Settings / API:
+   copy Project URL dan anon/public key.
+9. Vercel > Ganjar Printing > Settings > Environment Variables:
+   NEXT_PUBLIC_SUPABASE_URL = Project URL
+   NEXT_PUBLIC_SUPABASE_ANON_KEY = anon/public key
+10. Redeploy Vercel.
+11. Buka https://DOMAIN-ANDA/admin lalu login.
+
+PENTING:
+- Password admin tidak pernah ditaruh di GitHub.
+- Akun Supabase biasa tidak otomatis menjadi admin.
+- Hanya UUID yang ada di public.admin_users yang boleh mengelola katalog/pesanan.

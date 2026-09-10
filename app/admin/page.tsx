@@ -13,6 +13,7 @@ import {
 } from '@/lib/store';
 import { supabase } from '@/lib/supabase';
 import { Order, Product } from '@/lib/types';
+import { isCurrentUserAdmin } from '@/lib/admin';
 
 const emptyProduct: Product = {
   id:'', slug:'', name:'', category:'Banner', description:'', price:0,
@@ -34,6 +35,7 @@ export default function AdminPage(){
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [authError,setAuthError] = useState('');
+  const [adminChecked,setAdminChecked] = useState(false);
 
   async function load(){
     const [p,o] = await Promise.all([getProducts(),getOrders()]);
@@ -41,11 +43,14 @@ export default function AdminPage(){
   }
 
   useEffect(()=>{(async()=>{
-    if(supabase){
-      const {data}=await supabase.auth.getSession();
-      setLoggedIn(Boolean(data.session)); setSessionReady(true);
-      if(data.session) await load();
-    } else { setSessionReady(true); await load(); }
+    if(!supabase){ setSessionReady(true); setLoggedIn(false); setAdminChecked(true); return; }
+    const {data}=await supabase.auth.getSession();
+    if(data.session){
+      const ok=await isCurrentUserAdmin();
+      setLoggedIn(ok); setAdminChecked(true);
+      if(ok) await load(); else await supabase.auth.signOut();
+    } else { setLoggedIn(false); setAdminChecked(true); }
+    setSessionReady(true);
   })()},[]);
 
   const filtered = useMemo(()=>products.filter(p=>
@@ -57,7 +62,9 @@ export default function AdminPage(){
     if(!supabase) return;
     const {error}=await supabase.auth.signInWithPassword({email,password});
     if(error){setAuthError('Email atau password belum benar.');return;}
-    setLoggedIn(true); await load();
+    const ok=await isCurrentUserAdmin();
+    if(!ok){ await supabase.auth.signOut(); setAuthError('Akun ini bukan admin Ganjar Printing.'); return; }
+    setLoggedIn(true); setAdminChecked(true); await load();
   }
   async function logout(){ if(supabase) await supabase.auth.signOut(); setLoggedIn(false); }
   async function submit(e:React.FormEvent){
@@ -75,8 +82,9 @@ export default function AdminPage(){
   function editProduct(p:Product){setEditing(true);setForm(p);document.getElementById('editor')?.scrollIntoView({behavior:'smooth'});}
   async function toggleActive(p:Product){await saveProduct({...p,active:p.active===false});await load();}
 
-  if(!sessionReady) return <main className="adminLoading">Memuat dashboard…</main>;
-  if(!loggedIn) return <main className="adminLoginPage"><div className="adminLoginCard"><img src="/ganjar-logo.png" alt="Ganjar Printing"/><p className="eyebrow2">ADMIN GANJAR PRINTING</p><h1>Masuk ke dashboard</h1><p>Kelola katalog dan pesanan dari satu tempat.</p><form onSubmit={login}><label>Email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label><label>Password<input type="password" required value={password} onChange={e=>setPassword(e.target.value)}/></label>{authError&&<div className="adminAlert">{authError}</div>}<button className="adminPrimary">Masuk</button></form></div></main>;
+  if(!sessionReady || !adminChecked) return <main className="adminLoading">Memuat dashboard…</main>;
+  if(!supabase) return <main className="adminLoginPage"><div className="adminLoginCard"><img src="/ganjar-logo.png" alt="Ganjar Printing"/><p className="eyebrow2">ADMIN GANJAR PRINTING</p><h1>Admin belum diaktifkan</h1><p>Hubungkan project ke Supabase terlebih dahulu. Setelah itu, hanya akun yang ditetapkan sebagai admin yang dapat masuk ke dashboard.</p><Link href="/" className="adminPrimary">Kembali ke website</Link></div></main>;
+  if(!loggedIn) return <main className="adminLoginPage"><div className="adminLoginCard"><img src="/ganjar-logo.png" alt="Ganjar Printing"/><p className="eyebrow2">ADMIN GANJAR PRINTING</p><h1>Masuk ke dashboard</h1><p>Gunakan akun admin Ganjar Printing. Pengunjung biasa tidak dapat mengakses dashboard.</p><form onSubmit={login}><label>Email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label><label>Password<input type="password" required value={password} onChange={e=>setPassword(e.target.value)}/></label>{authError&&<div className="adminAlert">{authError}</div>}<button className="adminPrimary">Masuk</button></form></div></main>;
 
   const newOrders=orders.filter(o=>o.status==='Pesanan diterima').length;
   const revenue=orders.reduce((s,o)=>s+o.total,0);
@@ -90,13 +98,12 @@ export default function AdminPage(){
         <a href="#pesanan"><ShoppingBag/>Pesanan</a>
         <Link href="/" target="_blank"><Eye/>Lihat Website</Link>
       </nav>
-      <div className="adminSideFoot"><div><Store/><span><b>Mode {isSupabaseConfigured?'Online':'Demo'}</b><small>{isSupabaseConfigured?'Supabase aktif':'Tersimpan di browser ini'}</small></span></div>{isSupabaseConfigured&&<button onClick={logout}><LogOut/>Keluar</button>}</div>
+      <div className="adminSideFoot"><div><Store/><span><b>Admin Online</b><small>Supabase aktif & terlindungi</small></span></div>{isSupabaseConfigured&&<button onClick={logout}><LogOut/>Keluar</button>}</div>
     </aside>
 
     <section className="adminContent">
       <header className="adminHeader"><button className="adminMenu" onClick={()=>setMenuOpen(true)}><Menu/></button><div><small>Dashboard Admin</small><h1>Ganjar Printing</h1></div><Link className="adminView" href="/" target="_blank">Lihat Website <ChevronRight/></Link></header>
 
-      {!isSupabaseConfigured&&<div className="adminNotice"><b>Mode demo aktif.</b> Katalog bisa dicoba sekarang, tetapi perubahan hanya tersimpan di perangkat ini. Setelah Supabase disambungkan, data akan tersimpan online dan bisa dikelola dari HP mana pun.</div>}
 
       <section id="dashboard" className="adminSection">
         <div className="adminTitle"><div><span>RINGKASAN</span><h2>Hari ini di toko</h2></div></div>

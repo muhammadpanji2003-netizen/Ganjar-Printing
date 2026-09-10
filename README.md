@@ -1,35 +1,38 @@
-# Ganjar Printing Web v1.2
+# Ganjar Printing Web V1.3
 
-Website katalog dan pemesanan jasa printing berbasis Next.js, siap deploy ke Vercel.
+Website katalog dan pemesanan Ganjar Printing berbasis Next.js, Supabase, dan Vercel.
 
-## Yang baru di v1.2
-- UI pelanggan dibuat lebih simple dan elegan.
-- Katalog lebih bersih seperti e-commerce.
-- Dashboard admin dioptimalkan untuk HP.
-- Admin bisa tambah/edit/hapus produk, upload foto, ubah harga, kategori, variasi, produk unggulan, dan tampil/sembunyikan produk.
-- Admin bisa mengubah status pesanan.
-- Mode demo tetap jalan tanpa Supabase.
-- Siap disambungkan ke Supabase agar data tersimpan online.
+## Yang baru di V1.3
+- Home lebih simple dan elegan.
+- Contoh produk lokal sudah disiapkan sehingga tampilan katalog tidak bergantung pada gambar eksternal.
+- Admin wajib login Supabase.
+- Login saja belum cukup: akun juga harus terdaftar di tabel `admin_users`.
+- Policy database dan upload katalog hanya mengizinkan admin.
+- Admin dapat tambah/edit/hapus produk, upload foto dari HP, dan mengubah status pesanan.
 
-## Environment Variables
-Untuk mode demo cukup:
+## Setup Supabase
+1. Buat project Supabase.
+2. Buka SQL Editor lalu jalankan seluruh isi `supabase.sql`.
+3. Buka Authentication > Users dan buat akun admin dengan email dan password Anda.
+4. Copy UUID user admin tersebut.
+5. Di SQL Editor jalankan:
 
-```env
-NEXT_PUBLIC_STORE_NAME=Ganjar Printing
-NEXT_PUBLIC_WHATSAPP=6285311454581
-NEXT_PUBLIC_MAPS_URL=https://www.google.com/maps/search/?api=1&query=Jl.%20Balai%20Pustaka%20Baru%20No.46A%20Rawamangun%20Jakarta%20Timur
+```sql
+insert into public.admin_users(user_id)
+values ('UUID-USER-ADMIN-ANDA');
 ```
 
-Untuk mode online tambahkan:
+6. Buka Project Settings > API dan copy Project URL serta anon/public key.
+7. Tambahkan ke Vercel Environment Variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+8. Redeploy Vercel.
+9. Buka `/admin` lalu login menggunakan akun admin tadi.
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-```
+## Environment Variables lain
+- `NEXT_PUBLIC_STORE_NAME=Ganjar Printing`
+- `NEXT_PUBLIC_WHATSAPP=6285311454581`
+- `NEXT_PUBLIC_MAPS_URL=...`
 
-Jalankan `supabase.sql` pada SQL Editor Supabase sebelum memakai database online.
-
-## Admin
-Buka `/admin`.
-- Tanpa Supabase: langsung masuk mode demo.
-- Dengan Supabase: login menggunakan akun email/password Supabase Authentication.
+## Catatan
+Jangan menyimpan password admin di GitHub atau environment variable yang diawali `NEXT_PUBLIC_`.
