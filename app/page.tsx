@@ -4,7 +4,17 @@ import HomeHero from '@/components/HomeHero';
 import { ArrowRight, BadgeCheck, Clock3, CreditCard, Headphones, MessageCircle, PackageCheck, Tags, Truck } from 'lucide-react';
 import { whatsappUrl } from '@/lib/contact';
 
-const categories = ['Banner','Spanduk','Stiker','Kartu Nama','Brosur','Poster','Undangan','Merchandise','Lainnya'];
+const categories = [
+  {name:'Banner', image:'/categories/banner.webp'},
+  {name:'Spanduk', image:'/categories/banner.webp'},
+  {name:'Stiker', image:'/categories/sticker.webp'},
+  {name:'Kartu Nama', image:'/categories/business-card.webp'},
+  {name:'Brosur', image:'/categories/brochure.webp'},
+  {name:'Poster', image:'/categories/poster.webp'},
+  {name:'Undangan', image:'/categories/flyer.webp'},
+  {name:'Merchandise', image:'/categories/other.webp'},
+  {name:'Lainnya', image:'/categories/menu.webp'}
+];
 const shipping = ['GoSend','GrabExpress','JNE','J&T Express','SiCepat','AnterAja'];
 const payments = ['BCA','BRI','BNI','Mandiri','DANA','OVO','GoPay','ShopeePay','Alfamart','Indomaret'];
 
@@ -13,7 +23,7 @@ export default function Home(){
     <HomeHero/>
 
     <section className="v19Categories"><div className="container"><div className="v19CategoryStrip">
-      {categories.map((c,i)=><Link href="/katalog" key={c}><span className={`catTone tone${i%4}`}>{i===8?'≡':'◇'}</span><small>{c}</small></Link>)}
+      {categories.map((c,i)=><Link href="/katalog" key={c.name} className="v102CategoryCard"><span className={`catTone tone${i%4}`}><img src={c.image} alt={c.name}/></span><small>{c.name}</small></Link>)}
     </div></div></section>
 
     <section className="v19Products"><div className="container">

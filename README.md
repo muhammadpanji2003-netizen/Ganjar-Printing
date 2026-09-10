@@ -32,3 +32,9 @@ Visual-only refinement to match the approved desktop/mobile mockup more closely:
 - Menambahkan nomor WhatsApp 0812-4032-2071 di setiap slide.
 - Menambahkan email ganjarprinting26@gmail.com di setiap slide.
 - Menjaga struktur admin, Supabase, katalog, SEO, dan alur pemesanan tetap sama seperti V10.
+
+
+## V10.2
+- Logo pada hero memakai versi transparan khusus slide; logo header asli tetap tidak diubah.
+- Kategori Banner/Spanduk/Stiker/Kartu Nama/Brosur/Poster/Undangan/Merchandise/Lainnya kini memakai gambar relevan.
+- Product cards pada mobile diperbesar supaya gambar, nama, dan harga lebih jelas.

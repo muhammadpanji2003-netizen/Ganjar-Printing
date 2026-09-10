@@ -183,3 +183,42 @@
   .v101HeroContacts a{gap:7px}.v101HeroContacts svg{width:15px;height:15px}
   .v101HeroContacts small{font-size:7px}.v101HeroContacts b{font-size:9px;white-space:normal;overflow-wrap:anywhere}
 }
+
+/* =========================================================
+   V10.2 — transparent hero logo + image category cards +
+   larger mobile featured products. Visual overrides only.
+   ========================================================= */
+.v101HeroBrand img{background:transparent!important;mix-blend-mode:multiply;filter:none}
+.v19CategoryStrip{grid-template-columns:repeat(9,minmax(0,1fr));align-items:stretch}
+.v19CategoryStrip .v102CategoryCard{display:flex;flex-direction:column;gap:8px;text-align:left;min-width:0;color:#16385d}
+.v19CategoryStrip .v102CategoryCard .catTone{width:100%;height:118px;border-radius:18px;overflow:hidden;display:block;margin:0;background:#f4f8fc;border:1px solid #e5eef6;box-shadow:0 5px 16px rgba(30,68,110,.05)}
+.v19CategoryStrip .v102CategoryCard .catTone img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s ease}
+.v19CategoryStrip .v102CategoryCard:hover .catTone img{transform:scale(1.035)}
+.v19CategoryStrip .v102CategoryCard small{font-size:11px;font-weight:800;line-height:1.15;padding:0 2px;color:#17395f}
+
+@media(max-width:1100px){
+  .v19CategoryStrip{grid-template-columns:repeat(5,1fr)}
+  .v19CategoryStrip .v102CategoryCard .catTone{height:130px}
+}
+
+@media(max-width:560px){
+  .v19CategoryStrip{display:flex;overflow-x:auto;gap:10px;padding-bottom:5px;scroll-snap-type:x proximity}
+  .v19CategoryStrip .v102CategoryCard{min-width:105px;scroll-snap-align:start;gap:6px}
+  .v19CategoryStrip .v102CategoryCard .catTone{width:105px;height:88px;border-radius:15px}
+  .v19CategoryStrip .v102CategoryCard small{font-size:10px;text-align:center;padding:0}
+
+  .homeV19 .productGrid{grid-template-columns:1fr;gap:14px}
+  .homeV19 .productCard{grid-template-columns:158px minmax(0,1fr);min-height:158px;border-radius:20px;box-shadow:0 9px 24px rgba(24,60,100,.09);border:1px solid #e1ebf4}
+  .homeV19 .productPhoto{height:158px;background:#f3f8fc}
+  .homeV19 .productBody{padding:16px 14px}
+  .homeV19 .productBody h3{font-size:16px;line-height:1.18;margin:0 0 9px}
+  .homeV19 .productBottom small{font-size:10px;line-height:1.2}
+  .homeV19 .productBottom b{font-size:16px;line-height:1.15}
+  .homeV19 .productQuick .orderTextBtn{width:38px;height:38px;min-width:38px}
+  .homeV19 .productQuick .orderTextBtn:after{font-size:18px}
+}
+
+@media(max-width:390px){
+  .homeV19 .productCard{grid-template-columns:145px minmax(0,1fr);min-height:145px}
+  .homeV19 .productPhoto{height:145px}
+}

@@ -54,7 +54,7 @@ export default function HomeHero(){
         <button className="v19Arrow left" onClick={()=>go(index-1)} aria-label="Slide sebelumnya"><ChevronLeft/></button>
         <div className="v19HeroCopy v10HeroCopy">
           <div className="v101HeroBrand">
-            <Image src="/ganjar-logo.png" alt="Ganjar Printing" width={170} height={58} priority />
+            <Image src="/ganjar-logo-transparent.png" alt="Ganjar Printing" width={170} height={58} priority />
           </div>
           <div className="v19Eyebrow">{s.eyebrow}</div>
           <h1>{s.title}</h1>
