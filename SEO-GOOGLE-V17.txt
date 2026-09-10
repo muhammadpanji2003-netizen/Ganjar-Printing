@@ -1,0 +1,40 @@
+GANJAR PRINTING V1.7 — GOOGLE / LOCAL SEO
+
+Setelah deploy V1.7:
+
+1. Tambahkan Environment Variable Vercel (disarankan):
+   NEXT_PUBLIC_SITE_URL=https://ganjar-printing.vercel.app
+
+2. Daftarkan website ke Google Search Console.
+   Pilih URL Prefix jika masih memakai domain Vercel.
+
+3. Jika Search Console memberi kode verifikasi HTML tag seperti:
+   <meta name="google-site-verification" content="ABC123..." />
+   masukkan HANYA nilai content-nya ke Vercel:
+   NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=ABC123...
+   lalu Redeploy.
+
+4. Setelah verifikasi, submit sitemap:
+   https://ganjar-printing.vercel.app/sitemap.xml
+
+5. Gunakan URL Inspection pada homepage lalu Request Indexing.
+
+6. Buat/optimalkan Google Business Profile dengan data bisnis yang sama:
+   Nama: Ganjar Printing
+   Alamat: Jl. Balai Pustaka Baru No.46A, Rawamangun, Jakarta Timur
+   Website: https://ganjar-printing.vercel.app
+   WhatsApp/telepon: nomor bisnis yang aktif
+
+Yang ditambahkan pada V1.7:
+- SEO title & description lokal Jakarta Timur / Rawamangun
+- metadata Open Graph
+- canonical URL
+- robots.txt otomatis
+- sitemap.xml otomatis
+- LocalBusiness structured data (JSON-LD)
+- metadata khusus katalog, kontak, galeri, dan halaman produk
+- dukungan Google Search Console verification via environment variable
+- halaman admin, checkout, dan tracking pesanan tidak diprioritaskan untuk indexing
+
+Catatan:
+SEO membantu Google memahami website, tetapi tidak menjamin langsung ranking pertama untuk kata kunci "percetakan Jakarta Timur". Google Business Profile, ulasan pelanggan, konsistensi alamat/nomor, konten lokal, dan waktu juga berpengaruh.

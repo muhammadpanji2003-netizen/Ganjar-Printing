@@ -23,3 +23,16 @@ Environment variable yang direkomendasikan:
 `NEXT_PUBLIC_WHATSAPP=6281240322071`
 
 Jika ditulis sebagai `62 812-4032-2071`, V1.6 akan tetap membersihkannya menjadi angka valid secara otomatis.
+
+## V1.8 — Google & Local SEO
+- SEO lokal untuk kata kunci percetakan Jakarta Timur / Rawamangun.
+- Sitemap otomatis: `/sitemap.xml`.
+- Robots otomatis: `/robots.txt`.
+- LocalBusiness JSON-LD.
+- Canonical, Open Graph, dan metadata halaman.
+- Dukungan Google Search Console melalui `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
+- Lihat `SEO-GOOGLE-V17.txt` untuk langkah setelah deploy.
+
+
+## SEO V1.8
+Fokus utama SEO: **Ganjar Printing | Percetakan Rawamangun** dengan keyword lokal Rawamangun, Jakarta Timur, Pulogadung, serta keyword produk cetak. Desain dan fitur utama V1.7 dipertahankan.
