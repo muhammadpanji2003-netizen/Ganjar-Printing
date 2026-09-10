@@ -1,63 +1,35 @@
-# Ganjar Printing Web V1.1
+# Ganjar Printing Web v1.2
 
-Website pemesanan jasa printing berbasis Next.js yang siap di-push ke GitHub dan deploy ke Vercel.
+Website katalog dan pemesanan jasa printing berbasis Next.js, siap deploy ke Vercel.
 
-## Fitur V1
+## Yang baru di v1.2
+- UI pelanggan dibuat lebih simple dan elegan.
+- Katalog lebih bersih seperti e-commerce.
+- Dashboard admin dioptimalkan untuk HP.
+- Admin bisa tambah/edit/hapus produk, upload foto, ubah harga, kategori, variasi, produk unggulan, dan tampil/sembunyikan produk.
+- Admin bisa mengubah status pesanan.
+- Mode demo tetap jalan tanpa Supabase.
+- Siap disambungkan ke Supabase agar data tersimpan online.
 
-- Home modern dan responsif
-- Katalog produk + kategori
-- Detail produk + jumlah + catatan spesifikasi
-- Upload desain dari HP
-- Checkout tanpa wajib akun pembeli
-- Kode pesanan otomatis
-- Cek status pesanan
-- Tombol WhatsApp langsung
-- Tombol Google Maps
-- Admin dashboard mobile-friendly
-- Tambah/edit/hapus katalog dari HP
-- Upload foto katalog langsung dari kamera/galeri HP
-- Ubah status pesanan
-- Supabase database + storage + admin auth
-- Mode demo dengan localStorage bila Supabase belum disambungkan
-
-## 1. Jalankan lokal
-
-```bash
-npm install
-npm run dev
-```
-
-Buka `http://localhost:3000`.
-
-## 2. Sambungkan Supabase
-
-1. Buat project baru di Supabase.
-2. Buka SQL Editor.
-3. Jalankan seluruh isi `supabase.sql`.
-4. Buka Authentication > Users dan buat satu akun admin email/password.
-5. Copy `.env.example` menjadi `.env.local`.
-6. Isi:
+## Environment Variables
+Untuk mode demo cukup:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://PROJECT.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=ANON_KEY
-NEXT_PUBLIC_STORE_NAME=Nama Printing
-NEXT_PUBLIC_WHATSAPP=628xxxxxxxxxx
-NEXT_PUBLIC_MAPS_URL=https://maps.app.goo.gl/xxxx
+NEXT_PUBLIC_STORE_NAME=Ganjar Printing
+NEXT_PUBLIC_WHATSAPP=6285311454581
+NEXT_PUBLIC_MAPS_URL=https://www.google.com/maps/search/?api=1&query=Jl.%20Balai%20Pustaka%20Baru%20No.46A%20Rawamangun%20Jakarta%20Timur
 ```
 
-Admin tersedia di `/admin`.
+Untuk mode online tambahkan:
 
-## 3. Deploy ke GitHub + Vercel
+```env
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
 
-1. Buat repository GitHub baru.
-2. Upload seluruh isi folder project ini.
-3. Di Vercel pilih **Add New Project** > import repository GitHub tadi.
-4. Tambahkan Environment Variables yang sama seperti `.env.local`.
-5. Klik Deploy.
+Jalankan `supabase.sql` pada SQL Editor Supabase sebelum memakai database online.
 
-Setelah deploy, perubahan katalog/pesanan tidak memerlukan deploy ulang karena datanya tersimpan di Supabase.
-
-## Catatan produksi
-
-Bucket `designs` pada V1 dibuat public agar implementasi sederhana. Sebelum dipakai untuk bisnis dengan dokumen pelanggan sensitif, ubah bucket menjadi private dan gunakan signed URL untuk akses admin.
+## Admin
+Buka `/admin`.
+- Tanpa Supabase: langsung masuk mode demo.
+- Dengan Supabase: login menggunakan akun email/password Supabase Authentication.
