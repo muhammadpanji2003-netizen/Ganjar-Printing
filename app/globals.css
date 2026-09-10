@@ -108,3 +108,78 @@
   .v19LogisticsGrid{gap:9px}.v19LogisticsGrid>article{padding:15px;border-radius:15px}.v19LogTitle h3{font-size:15px}.v19LogTitle p{font-size:9px}.v19BrandGrid{gap:6px;margin-top:12px}.v19BrandGrid span{font-size:9px;padding:7px 8px;border-radius:8px}
   .v19About{padding:34px 0 86px}.v19About>.container{gap:14px}.v19About h2{font-size:23px}.v19About p{font-size:10px}.mobilebar{background:rgba(255,255,255,.97);backdrop-filter:blur(16px);border-top:1px solid #e9f0f6;box-shadow:0 -4px 18px rgba(28,65,100,.06)}.mobilebar a{color:#26445f;font-size:9px}.mobilebar a:first-child{color:#0b86ef}
 }
+
+/* =========================================================
+   V10 — wide hero + distinct slide visuals + clearer mobile products
+   Visual-only overrides. Existing app/admin/Supabase/SEO remain intact.
+   ========================================================= */
+.v10HeroWrap{padding:12px 0 14px;background:#fff}
+.v10HeroShell{width:calc(100% - 24px);max-width:1510px;margin:0 auto}
+.v10HeroCard{min-height:500px;border-radius:25px;grid-template-columns:minmax(0,.92fr) minmax(460px,1.08fr);overflow:hidden}
+.v10HeroCopy{padding:52px 54px 62px 72px}
+.v10HeroCopy h1{max-width:650px}
+.v10HeroVisual{position:relative;min-height:500px;overflow:hidden;isolation:isolate}
+.v10VisualGlow{position:absolute;width:520px;height:520px;border-radius:50%;right:-15px;top:10px;background:rgba(255,255,255,.72);filter:blur(2px);z-index:-1}
+.v10MainVisual,.v10SideVisual,.v10MiniVisual{position:absolute;margin:0;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 24px 55px rgba(20,58,96,.16);border:1px solid rgba(255,255,255,.9)}
+.v10MainVisual{width:58%;height:300px;right:8%;top:72px;transform:rotate(-1deg);z-index:3}
+.v10SideVisual{width:35%;height:210px;left:4%;top:150px;transform:rotate(-5deg);z-index:2}
+.v10MiniVisual{width:29%;height:135px;right:16%;bottom:34px;transform:rotate(4deg);z-index:4}
+.v10MainVisual img,.v10SideVisual img,.v10MiniVisual img{width:100%;height:100%;object-fit:cover;display:block;animation:v10Fade .42s ease both}
+.v10VisualLabel{position:absolute;right:8%;bottom:26px;font-size:10px;letter-spacing:.16em;font-weight:850;color:#315b82;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);padding:9px 13px;border-radius:999px;z-index:6}
+@keyframes v10Fade{from{opacity:.25;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+
+/* Make product cards easier to scan on phones */
+@media(max-width:900px){
+  .v10HeroShell{width:calc(100% - 18px)}
+  .v10HeroCard{grid-template-columns:1fr;min-height:0}
+  .v10HeroCopy{padding:40px 34px 20px}
+  .v10HeroVisual{min-height:330px}
+  .v10MainVisual{width:56%;height:220px;right:8%;top:50px}
+  .v10SideVisual{width:34%;height:150px;left:7%;top:95px}
+  .v10MiniVisual{width:30%;height:105px;right:18%;bottom:24px}
+}
+
+@media(max-width:560px){
+  .v10HeroWrap{padding:7px 0 10px}
+  .v10HeroShell{width:calc(100% - 10px)}
+  .v10HeroCard{border-radius:20px;min-height:0}
+  .v10HeroCopy{padding:22px 22px 13px}
+  .v10HeroCopy h1{font-size:30px;line-height:.97;max-width:290px}
+  .v10HeroCopy p{font-size:10px;line-height:1.45;max-width:285px;margin:10px 0 13px}
+  .v10HeroVisual{min-height:205px}
+  .v10VisualGlow{width:250px;height:250px;right:-20px;top:-10px}
+  .v10MainVisual{width:55%;height:135px;right:8%;top:27px;border-radius:14px}
+  .v10SideVisual{width:34%;height:96px;left:7%;top:62px;border-radius:13px}
+  .v10MiniVisual{width:28%;height:65px;right:17%;bottom:15px;border-radius:11px}
+  .v10VisualLabel{right:7%;bottom:8px;font-size:6px;padding:5px 8px;letter-spacing:.1em}
+
+  .homeV19 .productGrid{grid-template-columns:1fr;gap:12px}
+  .homeV19 .productCard{display:grid;grid-template-columns:132px minmax(0,1fr);min-height:132px;border-radius:18px;box-shadow:0 7px 20px rgba(24,60,100,.07)}
+  .homeV19 .productPhoto{height:132px;background:#f3f8fc}
+  .homeV19 .productBody{padding:14px 13px;justify-content:center;min-width:0}
+  .homeV19 .productBody h3{font-size:15px;line-height:1.15;margin:0 0 8px;white-space:normal}
+  .homeV19 .productBottom{display:flex;align-items:center;gap:8px}
+  .homeV19 .productBottom>div:first-child{min-width:0}
+  .homeV19 .productBottom small{font-size:9px;margin-bottom:2px}
+  .homeV19 .productBottom b{font-size:14px;line-height:1.15;white-space:nowrap}
+  .homeV19 .productQuick{margin-left:auto;flex:none}
+  .homeV19 .productQuick .orderTextBtn{width:34px;height:34px;min-width:34px}
+  .homeV19 .productQuick .orderTextBtn:after{font-size:16px}
+}
+
+/* V10.1 - hero logo + contact details */
+.v101HeroBrand{display:flex;align-items:center;margin-bottom:16px}
+.v101HeroBrand img{width:148px;height:auto;object-fit:contain}
+.v101HeroContacts{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap;margin-top:17px}
+.v101HeroContacts a{display:inline-flex;align-items:center;gap:9px;color:#12365e;text-decoration:none;min-width:0}
+.v101HeroContacts svg{width:18px;height:18px;flex:0 0 auto;color:#0b86ef}
+.v101HeroContacts span{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.v101HeroContacts small{font-size:8px;font-weight:700;color:#6c8197;margin-bottom:3px}
+.v101HeroContacts b{font-size:10px;font-weight:850;color:#12365e;white-space:nowrap}
+@media(max-width:900px){.v101HeroBrand img{width:138px}.v101HeroContacts{margin-top:15px;gap:10px 18px}}
+@media(max-width:560px){
+  .v101HeroBrand{margin-bottom:9px}.v101HeroBrand img{width:118px}
+  .v101HeroContacts{display:grid;grid-template-columns:1fr;gap:7px;margin-top:11px}
+  .v101HeroContacts a{gap:7px}.v101HeroContacts svg{width:15px;height:15px}
+  .v101HeroContacts small{font-size:7px}.v101HeroContacts b{font-size:9px;white-space:normal;overflow-wrap:anywhere}
+}
