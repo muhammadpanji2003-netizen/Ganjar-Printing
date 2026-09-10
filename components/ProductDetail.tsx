@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { getProducts, uploadDesign } from '@/lib/store';
 import { Product, OrderItem } from '@/lib/types';
 import { MessageCircle } from 'lucide-react';
-const CART_KEY='printing_cart_v1'; const wa=process.env.NEXT_PUBLIC_WHATSAPP||'6281234567890';
+const CART_KEY='printing_cart_v1'; const wa=process.env.NEXT_PUBLIC_WHATSAPP||'6281240322071';
 export default function ProductDetail({slug}:{slug:string}){
  const [p,setP]=useState<Product|null>(null); const [qty,setQty]=useState(1); const [note,setNote]=useState(''); const [file,setFile]=useState<File|null>(null); const [busy,setBusy]=useState(false); const router=useRouter();
  useEffect(()=>{getProducts().then(ps=>setP(ps.find(x=>x.slug===slug)||null))},[slug]);

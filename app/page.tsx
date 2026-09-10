@@ -1,25 +1,91 @@
 import Link from 'next/link';
 import ProductGrid from '@/components/ProductGrid';
-import { ArrowRight, BadgeCheck, Clock3, MapPin, MessageCircle, ShoppingBag, Sparkles, Truck, UploadCloud } from 'lucide-react';
+import {
+  ArrowRight, BadgeCheck, Clock3, MapPin, MessageCircle, ShoppingBag,
+  Sparkles, Truck, UploadCloud, ShieldCheck, Printer, Users
+} from 'lucide-react';
 
-const wa=process.env.NEXT_PUBLIC_WHATSAPP||'6285311454581';
-const maps=process.env.NEXT_PUBLIC_MAPS_URL||'https://www.google.com/maps/search/?api=1&query=Jl.%20Balai%20Pustaka%20Baru%20No.46A%20Rawamangun%20Jakarta%20Timur';
-const cats=[
-  ['Banner & Spanduk','BN','Mulai Rp18rb/m²'],['Stiker','ST','Custom & tahan air'],['Kartu Nama','KN','Profesional & premium'],['Brosur & Flyer','BR','Promosi full color'],
-  ['Poster','PS','Tajam & cerah'],['Buku','BK','Jilid rapi'],['Undangan','UD','Custom desain'],['Sertifikat','SR','Berbagai jenis kertas']
+const wa = process.env.NEXT_PUBLIC_WHATSAPP || '6281240322071';
+const maps = process.env.NEXT_PUBLIC_MAPS_URL || 'https://www.google.com/maps/search/?api=1&query=Jl.%20Balai%20Pustaka%20Baru%20No.46A%20Rawamangun%20Jakarta%20Timur';
+
+const cats = [
+  ['Kartu Nama','/categories/business-card.webp'],
+  ['Brosur','/categories/brochure.webp'],
+  ['Flyer','/categories/flyer.webp'],
+  ['Poster','/categories/poster.webp'],
+  ['Banner','/categories/banner.webp'],
+  ['Stiker','/categories/sticker.webp'],
+  ['Menu','/categories/menu.webp']
 ];
 
-export default function Home(){return <main>
-  <section className="minimalHero"><div className="container minimalHeroGrid">
-    <div className="minimalHeroCopy"><span className="ePill"><Sparkles/>Printing lebih mudah</span><h1>Cetak kebutuhan Anda,<br/><span>tanpa ribet.</span></h1><p>Pesan printing dari HP, pilih produk, upload desain, lalu konfirmasi lewat WhatsApp. Cepat, jelas, dan praktis.</p><div className="eHeroButtons"><Link href="/katalog" className="ePrimary"><ShoppingBag/>Lihat Katalog <ArrowRight/></Link><a href={`https://wa.me/${wa}?text=${encodeURIComponent('Halo Ganjar Printing, saya ingin bertanya tentang layanan printing.')}`} target="_blank" rel="noreferrer" className="eSecondary"><MessageCircle/>Chat WhatsApp</a></div><div className="eMiniTrust"><span><BadgeCheck/>Hasil rapi</span><span><Clock3/>Proses cepat</span><span><Truck/>Ambil / kirim</span></div></div>
-    <div className="minimalHeroVisual"><div className="showcaseMain"><img src="/samples/banner.svg" alt="Contoh banner Ganjar Printing"/></div><div className="showcaseStack"><img src="/samples/business-card.svg" alt="Contoh kartu nama"/><img src="/samples/sticker.svg" alt="Contoh stiker"/></div></div>
-  </div></section>
+export default function Home(){
+  return <main className="homeV14">
+    <section className="luxHero">
+      <div className="container luxHeroInner">
+        <div className="luxCopy">
+          <span className="luxPill"><Sparkles/>Solusi Cetak Modern</span>
+          <h1>Ide Anda.<br/>Kami Cetak<br/><span>Menjadi Nyata.</span></h1>
+          <p>Ganjar Printing membantu kebutuhan cetak personal maupun bisnis dengan hasil berkualitas, proses cepat, dan pemesanan yang mudah.</p>
+          <div className="luxActions">
+            <Link href="/katalog" className="luxPrimary"><ShoppingBag/>Lihat Katalog <ArrowRight/></Link>
+            <a className="luxSecondary" href={`https://wa.me/${wa}?text=${encodeURIComponent('Halo Ganjar Printing, saya ingin bertanya tentang layanan printing.')}`} target="_blank" rel="noreferrer"><MessageCircle/>Tanya via WhatsApp</a>
+          </div>
+          <div className="luxTrust">
+            <span><BadgeCheck/><b>Hasil Berkualitas</b><small>Detail rapi & presisi</small></span>
+            <span><Clock3/><b>Proses Cepat</b><small>Efisien dan jelas</small></span>
+            <span><Truck/><b>Ambil / Kirim</b><small>Fleksibel untuk Anda</small></span>
+          </div>
+        </div>
 
-  <section className="eCategories"><div className="container"><div className="eSectionHead"><div><span>KATEGORI</span><h2>Pilih kebutuhan cetak</h2><p>Produk populer yang paling sering dipesan pelanggan.</p></div><Link href="/katalog">Semua produk <ArrowRight/></Link></div><div className="simpleCatGrid">{cats.map(([c,abbr,desc])=><Link href={`/katalog?category=${encodeURIComponent(c.split(' & ')[0])}`} key={c}><div className="simpleCatIcon">{abbr}</div><div><b>{c}</b><small>{desc}</small></div><ArrowRight/></Link>)}</div></div></section>
+        <div className="luxVisual" aria-label="Contoh hasil cetak Ganjar Printing">
+          <div className="cmykEdge"><i/><i/><i/><i/></div>
+          <div className="luxPlant"/>
+          <div className="luxBoard mainBoard">
+            <img src="/ganjar-logo.png" alt="Ganjar Printing"/>
+            <strong>Cetak Lebih dari<br/>Sekadar Kertas.</strong>
+            <small>DESAIN · CETAK · SOLUSI</small>
+          </div>
+          <div className="luxBoard posterBoard">
+            <em>GOOD IDEAS</em>
+            <strong>GREAT<br/>PRINTS</strong>
+            <img src="/samples/poster.svg" alt="Contoh poster"/>
+          </div>
+          <div className="luxCard cardOne"><img src="/samples/business-card.svg" alt="Contoh kartu nama"/></div>
+          <div className="luxCard cardTwo"><img src="/samples/sticker.svg" alt="Contoh stiker"/></div>
+          <div className="luxCard cardThree"><img src="/samples/flyer.svg" alt="Contoh flyer"/></div>
+          <div className="luxCup"><img src="/ganjar-logo.png" alt="Logo Ganjar Printing"/><span>PRINT<br/>DAILY</span></div>
+        </div>
+      </div>
+    </section>
 
-  <section className="eFeatured"><div className="container"><div className="eSectionHead"><div><span>REKOMENDASI</span><h2>Produk favorit pelanggan</h2><p>Contoh produk bisa diganti sendiri dari dashboard admin.</p></div><Link href="/katalog">Lihat katalog <ArrowRight/></Link></div><ProductGrid limit={6}/></div></section>
+    <section className="quickCatalog">
+      <div className="container quickCatalogGrid">
+        {cats.map(([name,img])=><Link href={`/katalog?category=${encodeURIComponent(name)}`} key={name} className="quickCat">
+          <div><img src={img} alt={name}/></div><b>{name}</b>
+        </Link>)}
+        <Link href="/katalog" className="quickCat moreCat"><div><img src="/categories/other.webp" alt="Produk printing lainnya"/></div><b>Lainnya</b></Link>
+      </div>
+    </section>
 
-  <section id="cara-pesan" className="eSteps"><div className="container"><div className="eSectionHead"><div><span>CARA PESAN</span><h2>Empat langkah, selesai.</h2></div></div><div className="eStepGrid"><article><b>01</b><ShoppingBag/><h3>Pilih produk</h3><p>Pilih layanan cetak yang Anda perlukan.</p></article><article><b>02</b><UploadCloud/><h3>Upload desain</h3><p>Kirim file langsung dari HP atau laptop.</p></article><article><b>03</b><MessageCircle/><h3>Konfirmasi</h3><p>Detail pesanan dikonfirmasi lewat WhatsApp.</p></article><article><b>04</b><Truck/><h3>Ambil / kirim</h3><p>Pesanan siap diambil atau dikirim.</p></article></div></div></section>
+    <section id="tentang" className="luxStats">
+      <div className="container luxStatsInner">
+        <p>Solusi cetak yang praktis untuk kebutuhan harian, acara, sekolah, dan bisnis.</p>
+        <article><Users/><div><b>500+</b><small>Pelanggan dilayani</small></div></article>
+        <article><Printer/><div><b>10.000+</b><small>Produk tercetak</small></div></article>
+        <article><ShieldCheck/><div><b>Kualitas</b><small>Dicek sebelum selesai</small></div></article>
+      </div>
+    </section>
 
-  <section className="eLocation"><div className="container eLocationCard"><div><span>GANJAR PRINTING · RAWAMANGUN</span><h2>Dekat, praktis, dan mudah dihubungi.</h2><p><MapPin/>Jl. Balai Pustaka baru No.46A, Rawamangun, Jakarta Timur</p><div><a className="ePrimary" href={maps} target="_blank" rel="noreferrer"><MapPin/>Buka Google Maps</a><a className="eSecondary dark" href={`https://wa.me/${wa}`} target="_blank" rel="noreferrer"><MessageCircle/>WhatsApp</a></div></div><div className="eMapVisual"><span className="pin"><MapPin/></span><div className="mapLines"></div><b>Rawamangun</b><small>Jakarta Timur</small></div></div></section>
-</main>}
+    <section className="eFeatured v14Featured"><div className="container">
+      <div className="eSectionHead"><div><span>KATALOG</span><h2>Pilihan cetak untuk berbagai kebutuhan</h2><p>Harga dan produk dapat dikelola langsung dari dashboard admin.</p></div><Link href="/katalog">Lihat semua <ArrowRight/></Link></div>
+      <ProductGrid limit={6}/>
+    </div></section>
+
+    <section id="cara-pesan" className="eSteps v14Steps"><div className="container">
+      <div className="eSectionHead"><div><span>CARA PESAN</span><h2>Sederhana dari awal sampai selesai.</h2></div></div>
+      <div className="eStepGrid"><article><b>01</b><ShoppingBag/><h3>Pilih produk</h3><p>Tentukan jenis layanan cetak yang Anda butuhkan.</p></article><article><b>02</b><UploadCloud/><h3>Upload desain</h3><p>Kirim file langsung dari HP atau laptop.</p></article><article><b>03</b><MessageCircle/><h3>Konfirmasi</h3><p>Detail pesanan dikonfirmasi dengan cepat melalui WhatsApp.</p></article><article><b>04</b><Truck/><h3>Ambil / kirim</h3><p>Pesanan siap diambil di toko atau dikirim.</p></article></div>
+    </div></section>
+
+    <section className="eLocation v14Location"><div className="container eLocationCard"><div><span>GANJAR PRINTING · RAWAMANGUN</span><h2>Mudah ditemukan, mudah dihubungi.</h2><p><MapPin/>Jl. Balai Pustaka baru No.46A, Rawamangun, Jakarta Timur</p><div><a className="ePrimary" href={maps} target="_blank" rel="noreferrer"><MapPin/>Buka Google Maps</a><a className="eSecondary dark" href={`https://wa.me/${wa}`} target="_blank" rel="noreferrer"><MessageCircle/>WhatsApp</a></div></div><div className="eMapVisual"><span className="pin"><MapPin/></span><div className="mapLines"></div><b>Rawamangun</b><small>Jakarta Timur</small></div></div></section>
+  </main>
+}
