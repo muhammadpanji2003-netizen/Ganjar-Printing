@@ -120,3 +120,26 @@ create policy "design public read" on storage.objects for select using (bucket_i
 -- SETELAH membuat user admin di Supabase Authentication > Users,
 -- copy UUID user tersebut lalu jalankan satu kali perintah ini dengan UUID asli:
 -- insert into public.admin_users(user_id) values ('PASTE-UUID-ADMIN-DI-SINI');
+
+-- V1.6: mempermudah aktivasi admin pertama.
+-- Hanya bekerja jika tabel admin_users masih kosong dan user sudah login.
+create or replace function public.claim_first_admin()
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    return false;
+  end if;
+
+  if exists(select 1 from public.admin_users) then
+    return exists(select 1 from public.admin_users where user_id = auth.uid());
+  end if;
+
+  insert into public.admin_users(user_id) values (auth.uid()) on conflict do nothing;
+  return true;
+end;
+$$;
+grant execute on function public.claim_first_admin() to authenticated;

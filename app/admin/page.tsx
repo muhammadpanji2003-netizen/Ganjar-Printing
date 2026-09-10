@@ -63,7 +63,7 @@ export default function AdminPage(){
     const {error}=await supabase.auth.signInWithPassword({email,password});
     if(error){setAuthError('Email atau password belum benar.');return;}
     const ok=await isCurrentUserAdmin();
-    if(!ok){ await supabase.auth.signOut(); setAuthError('Akun ini bukan admin Ganjar Printing.'); return; }
+    if(!ok){ await supabase.auth.signOut(); setAuthError('Akun berhasil masuk, tetapi belum terdaftar sebagai admin. Jalankan SUPABASE-V16-UPDATE.sql satu kali di Supabase lalu coba lagi.'); return; }
     setLoggedIn(true); setAdminChecked(true); await load();
   }
   async function logout(){ if(supabase) await supabase.auth.signOut(); setLoggedIn(false); }

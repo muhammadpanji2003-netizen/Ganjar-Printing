@@ -1,12 +1,25 @@
-# Ganjar Printing Web V1.5
+# Ganjar Printing Web V1.6
 
-Website katalog dan pemesanan Ganjar Printing berbasis Next.js.
+Website pemesanan jasa printing berbasis Next.js + Supabase, siap GitHub dan Vercel.
 
-## Pembaruan V1.5
-- Nomor WhatsApp: 62 812-4032-2071
-- Tombol katalog pembeli sekarang bertuliskan **Pesan** agar lebih jelas
-- Kategori Home memakai thumbnail visual yang relevan untuk Kartu Nama, Brosur, Flyer, Poster, Banner, Stiker, Menu, dan produk lainnya
-- Tampilan tetap simple, premium, responsif, dan admin/Supabase tetap dipertahankan
+## Perubahan V1.6
+- Home didesain ulang dengan gaya putih, hitam, dan aksen gold yang lebih elegan.
+- Hero dibuat mengikuti arah visual referensi pengguna, tetapi tetap berupa komponen web responsif.
+- Tombol `Pesan` di katalog diperkecil dan dipastikan tidak terpotong.
+- Semua link WhatsApp menormalisasi nomor secara otomatis, walaupun environment variable ditulis memakai spasi/tanda hubung.
+- Link WhatsApp menggunakan endpoint `api.whatsapp.com/send` dengan nomor 6281240322071 dan pesan otomatis.
+- Login admin diperbaiki: akun terautentikasi pertama dapat otomatis menjadi admin bila `admin_users` masih kosong.
+- File `SUPABASE-V16-UPDATE.sql` disertakan untuk memperbarui Supabase lama.
 
-## Update ke GitHub/Vercel
-Extract ZIP, salin semua isi ke folder repository lokal Ganjar-Printing, Replace files, lalu GitHub Desktop → Commit to main → Push origin.
+## Setelah upload V1.6
+1. Replace seluruh file project lama dengan isi V1.6.
+2. Commit dan Push melalui GitHub Desktop.
+3. Jalankan `SUPABASE-V16-UPDATE.sql` satu kali di Supabase SQL Editor.
+4. Tunggu Vercel selesai build / redeploy.
+5. Login kembali melalui `/admin`.
+
+## WhatsApp
+Environment variable yang direkomendasikan:
+`NEXT_PUBLIC_WHATSAPP=6281240322071`
+
+Jika ditulis sebagai `62 812-4032-2071`, V1.6 akan tetap membersihkannya menjadi angka valid secara otomatis.
