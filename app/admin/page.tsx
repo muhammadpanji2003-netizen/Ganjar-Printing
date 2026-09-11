@@ -4,27 +4,32 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   Boxes, CheckCircle2, ChevronRight, CircleDollarSign, Eye, ImagePlus,
-  LayoutDashboard, LogOut, Menu, MessageCircle, PackagePlus, Pencil,
+  Images, LayoutDashboard, LogOut, Menu, MessageCircle, PackagePlus, Pencil,
   Search, ShoppingBag, Store, Trash2, X
 } from 'lucide-react';
 import {
-  deleteProduct, getOrders, getProducts, isSupabaseConfigured,
-  saveProduct, updateOrderStatus, uploadProductImage
+  deleteHeroSlide, deleteProduct, getHeroSlides, getOrders, getProducts, isSupabaseConfigured,
+  saveHeroSlide, saveProduct, updateOrderStatus, uploadHeroImage, uploadProductImage
 } from '@/lib/store';
 import { supabase } from '@/lib/supabase';
-import { Order, Product } from '@/lib/types';
+import { HeroSlide, Order, Product } from '@/lib/types';
 import { isCurrentUserAdmin } from '@/lib/admin';
 
 const emptyProduct: Product = {
   id:'', slug:'', name:'', category:'Banner', description:'', price:0,
   unit:'/pcs', image:'', featured:false, active:true, options:[]
 };
+const emptySlide:HeroSlide={id:'',title:'',description:'',image:'',active:true,sortOrder:1};
 const rupiah = (n:number) => `Rp${n.toLocaleString('id-ID')}`;
 const slugify = (s:string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 
 export default function AdminPage(){
   const [products,setProducts] = useState<Product[]>([]);
   const [orders,setOrders] = useState<Order[]>([]);
+  const [slides,setSlides] = useState<HeroSlide[]>([]);
+  const [slideForm,setSlideForm] = useState<HeroSlide>(emptySlide);
+  const [editingSlide,setEditingSlide] = useState(false);
+  const [slideError,setSlideError] = useState('');
   const [form,setForm] = useState<Product>(emptyProduct);
   const [editing,setEditing] = useState(false);
   const [busy,setBusy] = useState(false);
@@ -38,8 +43,8 @@ export default function AdminPage(){
   const [adminChecked,setAdminChecked] = useState(false);
 
   async function load(){
-    const [p,o] = await Promise.all([getProducts(),getOrders()]);
-    setProducts(p); setOrders(o);
+    const [p,o,h] = await Promise.all([getProducts(),getOrders(),getHeroSlides()]);
+    setProducts(p); setOrders(o); setSlides(h);
   }
 
   useEffect(()=>{(async()=>{
@@ -82,6 +87,23 @@ export default function AdminPage(){
   function editProduct(p:Product){setEditing(true);setForm(p);document.getElementById('editor')?.scrollIntoView({behavior:'smooth'});}
   async function toggleActive(p:Product){await saveProduct({...p,active:p.active===false});await load();}
 
+  async function heroPhoto(file?:File){
+    if(!file)return; setBusy(true); setSlideError('');
+    try{const url=await uploadHeroImage(file);setSlideForm(f=>({...f,image:url}));}
+    catch{setSlideError('Upload slide gagal. Pastikan SUPABASE-V103-UPDATE.sql sudah dijalankan.');}
+    finally{setBusy(false)}
+  }
+  async function submitSlide(e:React.FormEvent){
+    e.preventDefault(); setBusy(true); setSlideError('');
+    try{
+      const slide={...slideForm,id:slideForm.id||crypto.randomUUID(),sortOrder:Number(slideForm.sortOrder||1)};
+      await saveHeroSlide(slide); setSlideForm(emptySlide); setEditingSlide(false); await load();
+    }catch{setSlideError('Slide belum bisa disimpan. Jalankan SUPABASE-V103-UPDATE.sql satu kali di Supabase.');}
+    finally{setBusy(false)}
+  }
+  function editSlide(s:HeroSlide){setEditingSlide(true);setSlideForm(s);document.getElementById('hero-editor')?.scrollIntoView({behavior:'smooth'});}
+  async function toggleSlide(s:HeroSlide){try{await saveHeroSlide({...s,active:s.active===false});await load();}catch{setSlideError('Gagal mengubah status slide. Pastikan update Supabase V10.3 sudah dijalankan.');}}
+
   if(!sessionReady || !adminChecked) return <main className="adminLoading">Memuat dashboard…</main>;
   if(!supabase) return <main className="adminLoginPage"><div className="adminLoginCard"><img src="/ganjar-logo.png" alt="Ganjar Printing"/><p className="eyebrow2">ADMIN GANJAR PRINTING</p><h1>Admin belum diaktifkan</h1><p>Hubungkan project ke Supabase terlebih dahulu. Setelah itu, hanya akun yang ditetapkan sebagai admin yang dapat masuk ke dashboard.</p><Link href="/" className="adminPrimary">Kembali ke website</Link></div></main>;
   if(!loggedIn) return <main className="adminLoginPage"><div className="adminLoginCard"><img src="/ganjar-logo.png" alt="Ganjar Printing"/><p className="eyebrow2">ADMIN GANJAR PRINTING</p><h1>Masuk ke dashboard</h1><p>Gunakan akun admin Ganjar Printing. Pengunjung biasa tidak dapat mengakses dashboard.</p><form onSubmit={login}><label>Email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label><label>Password<input type="password" required value={password} onChange={e=>setPassword(e.target.value)}/></label>{authError&&<div className="adminAlert">{authError}</div>}<button className="adminPrimary">Masuk</button></form></div></main>;
@@ -95,6 +117,7 @@ export default function AdminPage(){
       <nav>
         <a href="#dashboard"><LayoutDashboard/>Dashboard</a>
         <a href="#produk"><Boxes/>Katalog Produk</a>
+        <a href="#slider"><Images/>Hero Slider</a>
         <a href="#pesanan"><ShoppingBag/>Pesanan</a>
         <Link href="/" target="_blank"><Eye/>Lihat Website</Link>
       </nav>
@@ -146,9 +169,39 @@ export default function AdminPage(){
         </div>
       </section>
 
+
+      <section id="slider" className="adminSection">
+        <div className="adminTitle"><div><span>HERO SLIDER</span><h2>Kelola slide beranda</h2><p>Upload gambar dari HP/laptop. Gambar akan membesar di desktop dan tetap utuh tanpa terpotong di HP.</p></div><button className="adminPrimary small" onClick={()=>{setEditingSlide(false);setSlideForm({...emptySlide,sortOrder:slides.length+1});document.getElementById('hero-editor')?.scrollIntoView({behavior:'smooth'})}}><ImagePlus/>Tambah Slide</button></div>
+        {slideError&&<div className="adminAlert">{slideError}</div>}
+        <div className="adminProductLayout">
+          <div className="adminCatalogPanel">
+            <div className="adminCatalogTop"><b>{slides.length} slide</b><span>Urutan kecil tampil lebih dulu</span></div>
+            <div className="adminProductList">{[...slides].sort((a,b)=>(a.sortOrder??0)-(b.sortOrder??0)).map(s=><article key={s.id} className="adminProductRow">
+              <div className="adminHeroThumb">{s.image?<img src={s.image} alt=""/>:<ImagePlus/>}</div>
+              <div className="adminProductInfo"><div className="adminProductMeta"><span>Urutan {s.sortOrder||0}</span></div><h3>{s.title||'Tanpa judul'}</h3><p>{s.description||'Tidak ada deskripsi'}</p></div>
+              <button className={`adminStatus ${s.active===false?'off':''}`} onClick={()=>toggleSlide(s)}>{s.active===false?'Nonaktif':'Aktif'}</button>
+              <div className="adminRowActions"><button onClick={()=>editSlide(s)} title="Edit"><Pencil/></button><button onClick={async()=>{if(confirm(`Hapus slide ${s.title||''}?`)){try{await deleteHeroSlide(s.id);await load()}catch{setSlideError('Slide gagal dihapus.')}}}} title="Hapus"><Trash2/></button></div>
+            </article>)}{slides.length===0&&<div className="adminEmpty">Belum ada slide dari admin. Website sementara memakai slide bawaan V10.2.</div>}</div>
+          </div>
+          <div id="hero-editor" className="adminEditor">
+            <div className="adminEditorHead"><div><span>{editingSlide?'EDIT SLIDE':'SLIDE BARU'}</span><h3>{editingSlide?'Ubah slide beranda':'Tambah slide beranda'}</h3></div>{editingSlide&&<button onClick={()=>{setEditingSlide(false);setSlideForm(emptySlide)}}><X/></button>}</div>
+            <form onSubmit={submitSlide}>
+              <label className="adminUpload adminHeroUpload">{slideForm.image?<img src={slideForm.image} alt="Preview slide"/>:<><ImagePlus/><b>Upload gambar slide</b><small>Disarankan 1600 × 650 px. JPG/PNG/WebP.</small></>}<input type="file" accept="image/*" onChange={e=>heroPhoto(e.target.files?.[0])}/></label>
+              <label>Judul slide<input required placeholder="Contoh: Cetak Berkualitas untuk Bisnis Anda" value={slideForm.title} onChange={e=>setSlideForm({...slideForm,title:e.target.value})}/></label>
+              <label>Deskripsi<textarea rows={3} placeholder="Teks singkat yang tampil di slide…" value={slideForm.description||''} onChange={e=>setSlideForm({...slideForm,description:e.target.value})}/></label>
+              <label>Urutan<input type="number" min="1" value={slideForm.sortOrder||1} onChange={e=>setSlideForm({...slideForm,sortOrder:Number(e.target.value)})}/></label>
+              <div className="adminChecks"><label><input type="checkbox" checked={slideForm.active!==false} onChange={e=>setSlideForm({...slideForm,active:e.target.checked})}/>Tampilkan slide</label></div>
+              <p className="adminHint">Tombol <b>Tanya via WhatsApp</b> tetap otomatis tersedia pada setiap slide dan tidak perlu diisi ulang.</p>
+              <button className="adminPrimary" disabled={busy||!slideForm.image}>{busy?'Menyimpan…':editingSlide?'Simpan Perubahan':'Publish Slide'}</button>
+              {editingSlide&&<button type="button" className="adminSecondary" onClick={()=>{setEditingSlide(false);setSlideForm(emptySlide)}}>Batal</button>}
+            </form>
+          </div>
+        </div>
+      </section>
+
       <section id="pesanan" className="adminSection">
         <div className="adminTitle"><div><span>PESANAN</span><h2>Pesanan masuk</h2><p>Ubah status agar pelanggan bisa memantau progres cetaknya.</p></div></div>
-        <div className="adminOrders">{orders.length===0?<div className="adminEmpty">Belum ada pesanan.</div>:orders.map(o=><article key={o.id}><div><span className="orderCode">{o.code}</span><h3>{o.customerName}</h3><a href={`https://wa.me/${o.whatsapp.replace(/\D/g,'')}`} target="_blank"><MessageCircle/> {o.whatsapp}</a></div><div><small>Total</small><b>{rupiah(o.total)}</b></div><select value={o.status} onChange={async e=>{await updateOrderStatus(o.id,e.target.value);await load()}}><option>Pesanan diterima</option><option>File diperiksa</option><option>Menunggu pembayaran</option><option>Diproses</option><option>Finishing</option><option>Siap diambil/dikirim</option><option>Selesai</option></select></article>)}</div>
+        <div className="adminOrders">{orders.length===0?<div className="adminEmpty">Belum ada pesanan.</div>:orders.map(o=><article key={o.id}><div><span className="orderCode">{o.code}</span><h3>{o.customerName}</h3><a href={`https://wa.me/${o.whatsapp.replace(/\D/g,'')}`} target="_blank"><MessageCircle/> {o.whatsapp}</a></div><div><small>Total</small><b>{rupiah(o.total)}</b>{o.paymentMethod&&<small className="adminPay">{o.paymentMethod}</small>}</div><select value={o.status} onChange={async e=>{await updateOrderStatus(o.id,e.target.value);await load()}}><option>Pesanan diterima</option><option>File diperiksa</option><option>Menunggu pembayaran</option><option>Diproses</option><option>Finishing</option><option>Siap diambil/dikirim</option><option>Selesai</option></select></article>)}</div>
       </section>
     </section>
   </main>;

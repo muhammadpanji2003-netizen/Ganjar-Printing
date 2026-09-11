@@ -1,0 +1,16 @@
+GANJAR PRINTING V10.3
+
+1. Copy seluruh isi folder V10.3 ke repository Ganjar Printing Anda (replace file lama).
+2. GitHub Desktop -> Commit to main -> Push origin.
+3. Vercel akan deploy otomatis.
+4. PENTING: Supabase -> SQL Editor -> New query -> copy isi SUPABASE-V103-UPDATE.sql -> Run SATU KALI.
+   SQL ini TIDAK menghapus katalog atau pesanan lama.
+5. Setelah deploy, buka /admin -> menu Hero Slider.
+6. Tambahkan slide dari HP/laptop. Rekomendasi gambar 1600 x 650 px.
+7. Tombol "Tanya via WhatsApp" tetap otomatis tampil pada setiap slide.
+8. Checkout hanya menyediakan BCA, Mandiri, BRI, dan GoPay.
+
+Catatan:
+- Produk/katalog yang sudah Anda edit tetap tersimpan di Supabase lama.
+- Jangan membuat project Supabase baru.
+- Jangan menjalankan reset database.

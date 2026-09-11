@@ -16,7 +16,7 @@ const categories = [
   {name:'Lainnya', image:'/categories/menu.webp'}
 ];
 const shipping = ['GoSend','GrabExpress','JNE','J&T Express','SiCepat','AnterAja'];
-const payments = ['BCA','BRI','BNI','Mandiri','DANA','OVO','GoPay','ShopeePay','Alfamart','Indomaret'];
+const payments = ['BCA','Mandiri','BRI','GoPay'];
 
 export default function Home(){
   return <main className="homeV19">
@@ -52,7 +52,7 @@ export default function Home(){
 
     <section className="v19Logistics"><div className="container v19LogisticsGrid">
       <article><div className="v19LogTitle"><Truck/><div><h3>Pengiriman</h3><p>Pesanan dapat dikirim melalui ekspedisi terpercaya.</p></div></div><div className="v19BrandGrid">{shipping.map(x=><span key={x}>{x}</span>)}</div></article>
-      <article><div className="v19LogTitle"><CreditCard/><div><h3>Metode Pembayaran</h3><p>Mudah, aman, dan fleksibel.</p></div></div><div className="v19BrandGrid payments">{payments.map(x=><span key={x}>{x}</span>)}<span>dan lainnya…</span></div></article>
+      <article><div className="v19LogTitle"><CreditCard/><div><h3>Metode Pembayaran</h3><p>Mudah, aman, dan fleksibel.</p></div></div><div className="v19BrandGrid payments">{payments.map(x=><span key={x}>{x}</span>)}</div></article>
     </div></section>
 
     <section id="tentang" className="v19About"><div className="container"><div><span>TENTANG GANJAR PRINTING</span><h2>Ide Anda, kami bantu jadi cetakan yang rapi dan bermakna.</h2></div><p>Ganjar Printing melayani kebutuhan printing personal, usaha, sekolah, acara, dan promosi di Rawamangun, Jakarta Timur. Pemesanan dapat dilakukan langsung melalui WhatsApp atau datang ke lokasi kami.</p></div></section>

@@ -222,3 +222,27 @@
   .homeV19 .productCard{grid-template-columns:145px minmax(0,1fr);min-height:145px}
   .homeV19 .productPhoto{height:145px}
 }
+
+/* V10.3 - admin-managed responsive hero */
+.v103HeroCard{display:grid;grid-template-columns:minmax(0,.92fr) minmax(420px,1.08fr);align-items:stretch}
+.v103HeroCopy{position:relative;z-index:2}
+.v103HeroCopy h1{font-size:clamp(42px,4.2vw,62px);line-height:.96;color:#102a55}
+.v103HeroVisual{min-height:500px;display:flex;align-items:center;justify-content:center;padding:34px 42px 34px 12px;background:radial-gradient(circle at 55% 48%,rgba(255,255,255,.96),rgba(232,245,255,.68) 55%,rgba(224,241,255,.22));overflow:hidden}
+.v103HeroVisual img{display:block;width:100%;height:100%;max-height:430px;object-fit:contain;object-position:center;animation:v10Fade .42s ease both}
+.adminHeroThumb{width:120px;height:72px;border-radius:12px;background:#eef5fb;overflow:hidden;display:grid;place-items:center;flex:none}
+.adminHeroThumb img{width:100%;height:100%;object-fit:contain;background:#fff}
+.adminHeroUpload{min-height:190px}.adminHeroUpload img{width:100%;height:180px;object-fit:contain;background:#f7fafc}
+.adminHint{font-size:12px;line-height:1.5;color:#5b6e82;background:#f2f7fb;border:1px solid #dfeaf4;border-radius:10px;padding:11px 12px;margin:2px 0 12px}
+.adminPay{display:block;margin-top:4px;color:#53708d;font-weight:700}
+@media(max-width:900px){
+  .v103HeroCard{grid-template-columns:1fr}
+  .v103HeroVisual{min-height:300px;padding:18px 28px 30px}
+  .v103HeroVisual img{max-height:270px;width:100%;height:auto;object-fit:contain}
+}
+@media(max-width:560px){
+  .v103HeroCopy{padding:20px 20px 10px}
+  .v103HeroCopy h1{font-size:29px;max-width:100%}
+  .v103HeroVisual{min-height:0;height:auto;padding:8px 14px 30px;background:linear-gradient(180deg,rgba(238,247,255,.42),rgba(255,255,255,.78))}
+  .v103HeroVisual img{width:100%;height:auto;max-height:none;object-fit:contain;object-position:center}
+  .adminHeroThumb{width:88px;height:62px}
+}

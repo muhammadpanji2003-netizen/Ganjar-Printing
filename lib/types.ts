@@ -12,6 +12,17 @@ export type Product = {
   options?: string[];
 };
 
+export type HeroSlide = {
+  id: string;
+  title: string;
+  description?: string;
+  image: string;
+  active?: boolean;
+  sortOrder?: number;
+};
+
+export type PaymentMethod = 'BCA' | 'Mandiri' | 'BRI' | 'GoPay';
+
 export type OrderItem = {
   productId: string;
   productName: string;
@@ -33,4 +44,5 @@ export type Order = {
   status: string;
   createdAt: string;
   items: OrderItem[];
+  paymentMethod?: PaymentMethod;
 };

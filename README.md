@@ -38,3 +38,12 @@ Visual-only refinement to match the approved desktop/mobile mockup more closely:
 - Logo pada hero memakai versi transparan khusus slide; logo header asli tetap tidak diubah.
 - Kategori Banner/Spanduk/Stiker/Kartu Nama/Brosur/Poster/Undangan/Merchandise/Lainnya kini memakai gambar relevan.
 - Product cards pada mobile diperbesar supaya gambar, nama, dan harga lebih jelas.
+
+
+## V10.3
+- Hero slider dapat dikelola dari Admin: upload, edit, hapus, aktif/nonaktif, dan atur urutan.
+- Gambar hero responsif: membesar di desktop dan tetap utuh (tidak terpotong) di HP.
+- Tombol Tanya via WhatsApp tetap tersedia di setiap slide.
+- Metode pembayaran dibatasi menjadi BCA, Mandiri, BRI, dan GoPay.
+- Logo Ganjar Printing diperbarui dan dipakai sebagai favicon/branding situs.
+- Data katalog Supabase yang sudah ada tidak di-reset. Jalankan SUPABASE-V103-UPDATE.sql satu kali.

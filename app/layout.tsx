@@ -46,6 +46,7 @@ export const metadata: Metadata = {
     'Ganjar Printing',
   ],
   alternates: { canonical: '/' },
+  icons: { icon: '/icon.png', shortcut: '/icon.png', apple: '/icon.png' },
   openGraph: {
     type: 'website',
     locale: 'id_ID',

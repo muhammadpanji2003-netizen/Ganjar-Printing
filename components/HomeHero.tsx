@@ -1,66 +1,60 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Mail, MessageCircle, Phone } from 'lucide-react';
 import { whatsappUrl } from '@/lib/contact';
+import { getHeroSlides } from '@/lib/store';
+import type { HeroSlide } from '@/lib/types';
 
-const slides = [
+const fallbackSlides: HeroSlide[] = [
   {
-    eyebrow: 'CETAK LEBIH DARI SEKADAR KERTAS',
-    title: <>Cetak Berkualitas<br/>untuk Setiap<br/><span>Langkah Anda</span></>,
-    desc: 'Dari desain hingga hasil cetak, semua dalam satu tempat dengan kualitas terbaik dan harga bersahabat.',
-    theme: 'light',
-    mainImage: '/categories/business-card.webp',
-    sideImage: '/categories/brochure.webp',
-    miniImage: '/categories/sticker.webp',
-    label: 'Kartu Nama • Brosur • Stiker'
+    id:'fallback-1', title:'Cetak Berkualitas untuk Setiap Langkah Anda',
+    description:'Dari desain hingga hasil cetak, semua dalam satu tempat dengan kualitas terbaik dan harga bersahabat.',
+    image:'/categories/business-card.webp', active:true, sortOrder:1
   },
   {
-    eyebrow: 'PROMOSI LEBIH MENONJOL',
-    title: <>Bikin Promosi<br/>Lebih Terlihat<br/><span>dan Berkesan</span></>,
-    desc: 'Banner, poster, dan media promosi dicetak rapi untuk membantu bisnis Anda tampil lebih profesional.',
-    theme: 'blue',
-    mainImage: '/categories/banner.webp',
-    sideImage: '/categories/poster.webp',
-    miniImage: '/categories/flyer.webp',
-    label: 'Banner • Poster • Flyer'
+    id:'fallback-2', title:'Bikin Promosi Lebih Terlihat dan Berkesan',
+    description:'Banner, poster, dan media promosi dicetak rapi untuk membantu bisnis Anda tampil lebih profesional.',
+    image:'/categories/banner.webp', active:true, sortOrder:2
   },
   {
-    eyebrow: 'GANJAR PRINTING RAWAMANGUN',
-    title: <>Ide Anda<br/>Kami Bantu Jadi<br/><span>Cetakan Nyata</span></>,
-    desc: 'Konsultasikan kebutuhan cetak personal, usaha, sekolah, dan acara dengan pemesanan mudah melalui WhatsApp.',
-    theme: 'soft',
-    mainImage: '/categories/brochure.webp',
-    sideImage: '/categories/menu.webp',
-    miniImage: '/categories/other.webp',
-    label: 'Brosur • Menu • Lainnya'
+    id:'fallback-3', title:'Ide Anda, Kami Bantu Jadi Cetakan Nyata',
+    description:'Konsultasikan kebutuhan cetak personal, usaha, sekolah, dan acara dengan pemesanan mudah melalui WhatsApp.',
+    image:'/categories/brochure.webp', active:true, sortOrder:3
   }
 ];
 
 export default function HomeHero(){
   const [index,setIndex]=useState(0);
+  const [remoteSlides,setRemoteSlides]=useState<HeroSlide[]>([]);
+  const slides=useMemo(()=>{
+    const active=remoteSlides.filter(s=>s.active!==false).sort((a,b)=>(a.sortOrder??0)-(b.sortOrder??0));
+    return active.length ? active : fallbackSlides;
+  },[remoteSlides]);
+
+  useEffect(()=>{ getHeroSlides().then(setRemoteSlides).catch(()=>{}); },[]);
+  useEffect(()=>{ setIndex(0); },[slides.length]);
   useEffect(()=>{
+    if(slides.length<=1) return;
     const t=setInterval(()=>setIndex(i=>(i+1)%slides.length),6500);
     return ()=>clearInterval(t);
-  },[]);
-  const go=(n:number)=>setIndex((n+slides.length)%slides.length);
-  const s=slides[index];
+  },[slides.length]);
 
-  return <section className="v19HeroWrap v10HeroWrap">
+  const go=(n:number)=>setIndex((n+slides.length)%slides.length);
+  const s=slides[index] || fallbackSlides[0];
+
+  return <section className="v19HeroWrap v10HeroWrap v103HeroWrap">
     <div className="v10HeroShell">
-      <div className={`v19HeroCard v10HeroCard theme-${s.theme}`}>
-        <button className="v19Arrow left" onClick={()=>go(index-1)} aria-label="Slide sebelumnya"><ChevronLeft/></button>
-        <div className="v19HeroCopy v10HeroCopy">
-          <div className="v101HeroBrand">
-            <Image src="/ganjar-logo-transparent.png" alt="Ganjar Printing" width={170} height={58} priority />
-          </div>
-          <div className="v19Eyebrow">{s.eyebrow}</div>
+      <div className="v19HeroCard v10HeroCard v103HeroCard">
+        {slides.length>1&&<button className="v19Arrow left" onClick={()=>go(index-1)} aria-label="Slide sebelumnya"><ChevronLeft/></button>}
+        <div className="v19HeroCopy v10HeroCopy v103HeroCopy">
+          <div className="v101HeroBrand"><img src="/ganjar-logo.png" alt="Ganjar Printing"/></div>
+          <div className="v19Eyebrow">GANJAR PRINTING RAWAMANGUN</div>
           <h1>{s.title}</h1>
-          <p>{s.desc}</p>
+          {s.description&&<p>{s.description}</p>}
           <div className="v19HeroActions">
-            <a className="v19Primary" href={whatsappUrl('Halo Ganjar Printing, saya ingin konsultasi kebutuhan cetak.')} target="_blank" rel="noreferrer"><MessageCircle/>Pesan Sekarang</a>
+            <a className="v19Primary" href={whatsappUrl('Halo Ganjar Printing, saya ingin bertanya dan konsultasi kebutuhan cetak.')} target="_blank" rel="noreferrer"><MessageCircle/>Tanya via WhatsApp</a>
             <Link className="v19Secondary" href="/katalog">Lihat Produk</Link>
           </div>
           <div className="v101HeroContacts" aria-label="Kontak Ganjar Printing">
@@ -70,16 +64,12 @@ export default function HomeHero(){
           <div className="v19HeroTrust"><span>◷ Proses Cepat</span><span>♢ Kualitas Terjamin</span><span>⌁ Harga Bersahabat</span><span>♡ Pelayanan Responsif</span></div>
         </div>
 
-        <div className="v10HeroVisual" aria-hidden="true">
-          <div className="v10VisualGlow"></div>
-          <figure className="v10MainVisual"><img key={`main-${index}`} src={s.mainImage} alt=""/></figure>
-          <figure className="v10SideVisual"><img key={`side-${index}`} src={s.sideImage} alt=""/></figure>
-          <figure className="v10MiniVisual"><img key={`mini-${index}`} src={s.miniImage} alt=""/></figure>
-          <div className="v10VisualLabel">{s.label}</div>
+        <div className="v103HeroVisual">
+          <img key={`${s.id}-${index}`} src={s.image} alt={s.title || 'Slide Ganjar Printing'}/>
         </div>
 
-        <button className="v19Arrow right" onClick={()=>go(index+1)} aria-label="Slide berikutnya"><ChevronRight/></button>
-        <div className="v19Dots">{slides.map((_,i)=><button key={i} className={i===index?'active':''} onClick={()=>setIndex(i)} aria-label={`Buka slide ${i+1}`}></button>)}</div>
+        {slides.length>1&&<button className="v19Arrow right" onClick={()=>go(index+1)} aria-label="Slide berikutnya"><ChevronRight/></button>}
+        {slides.length>1&&<div className="v19Dots">{slides.map((slide,i)=><button key={slide.id} className={i===index?'active':''} onClick={()=>setIndex(i)} aria-label={`Buka slide ${i+1}`}></button>)}</div>}
       </div>
     </div>
   </section>
