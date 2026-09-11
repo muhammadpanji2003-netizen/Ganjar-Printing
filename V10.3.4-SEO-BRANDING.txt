@@ -1,0 +1,22 @@
+GANJAR PRINTING V10.3.4 — SEO BRANDING GOOGLE
+
+Perubahan hanya pada metadata/SEO branding Google:
+- applicationName = Ganjar Printing
+- publisher/creator = Ganjar Printing
+- WebSite structured data dengan name Ganjar Printing
+- alternateName Ganjar Printing Rawamangun
+- Organization structured data + logo favicon
+- favicon yang sudah ada tetap dipakai
+
+TIDAK MENGUBAH:
+- Supabase
+- produk yang sudah di-upload
+- pesanan
+- hero slider
+- kategori beranda
+- akun/admin_users
+- storage/image upload
+- struktur tabel database
+
+Tidak perlu menjalankan SQL apa pun.
+Setelah deploy, lakukan Request Indexing homepage satu kali di Google Search Console.

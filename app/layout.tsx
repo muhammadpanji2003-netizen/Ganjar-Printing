@@ -8,6 +8,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ganjar-printing.ver
 const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 export const metadata: Metadata = {
+  applicationName: 'Ganjar Printing',
   metadataBase: new URL(siteUrl),
   title: {
     default: 'Ganjar Printing | Percetakan Rawamangun',
@@ -46,6 +47,9 @@ export const metadata: Metadata = {
     'Ganjar Printing',
   ],
   alternates: { canonical: '/' },
+  category: 'business',
+  creator: 'Ganjar Printing',
+  publisher: 'Ganjar Printing',
   icons: { icon: '/icon.png', shortcut: '/icon.png', apple: '/icon.png' },
   openGraph: {
     type: 'website',
@@ -64,6 +68,35 @@ export const metadata: Metadata = {
     images: ['/ganjar-logo.png'],
   },
   verification: googleVerification ? { google: googleVerification } : undefined,
+};
+
+
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteUrl}/#website`,
+  url: `${siteUrl}/`,
+  name: 'Ganjar Printing',
+  alternateName: 'Ganjar Printing Rawamangun',
+  inLanguage: 'id-ID',
+  publisher: {
+    '@id': `${siteUrl}/#organization`,
+  },
+};
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
+  name: 'Ganjar Printing',
+  url: `${siteUrl}/`,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${siteUrl}/icon.png`,
+    width: 512,
+    height: 512,
+  },
 };
 
 const localBusinessJsonLd = {
@@ -98,6 +131,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
