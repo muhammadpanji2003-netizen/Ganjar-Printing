@@ -20,7 +20,7 @@ const emptyProduct: Product = {
   id:'', slug:'', name:'', category:'Banner', description:'', price:0,
   unit:'/pcs', image:'', featured:false, active:true, options:[]
 };
-const emptySlide:HeroSlide={id:'',title:'',description:'',image:'',active:true,sortOrder:1};
+const emptySlide:HeroSlide={id:'',title:'Slide Ganjar Printing',description:'',image:'',active:true,sortOrder:1};
 const emptyHomeCategory:HomeCategory={id:'',name:'',image:'',href:'/katalog',active:true,sortOrder:1};
 const rupiah = (n:number) => `Rp${n.toLocaleString('id-ID')}`;
 const slugify = (s:string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -102,7 +102,7 @@ export default function AdminPage(){
   async function submitSlide(e:React.FormEvent){
     e.preventDefault(); setBusy(true); setSlideError('');
     try{
-      const slide={...slideForm,id:slideForm.id||crypto.randomUUID(),sortOrder:Number(slideForm.sortOrder||1)};
+      const slide={...slideForm,title:slideForm.title||'Slide Ganjar Printing',description:'',id:slideForm.id||crypto.randomUUID(),sortOrder:Number(slideForm.sortOrder||1)};
       await saveHeroSlide(slide); setSlideForm(emptySlide); setEditingSlide(false); await load();
     }catch{setSlideError('Slide belum bisa disimpan. Jalankan SUPABASE-V103-UPDATE.sql satu kali di Supabase.');}
     finally{setBusy(false)}
@@ -150,7 +150,7 @@ export default function AdminPage(){
     </aside>
 
     <section className="adminContent">
-      <header className="adminHeader"><button className="adminMenu" onClick={()=>setMenuOpen(true)}><Menu/></button><div><small>Dashboard Admin</small><h1>Ganjar Printing</h1></div><Link className="adminView" href="/" target="_blank">Lihat Website <ChevronRight/></Link></header>
+      <header className="adminHeader"><button className="adminMenu" onClick={()=>setMenuOpen(true)}><Menu/></button><div><small>Dashboard Admin</small><h1>Ganjar Printing</h1></div><div className="adminHeaderActions"><Link className="adminView" href="/" target="_blank">Lihat Website <ChevronRight/></Link><button type="button" className="adminLogoutTop" onClick={logout} title="Keluar dari dashboard"><LogOut/> Logout</button></div></header>
 
 
       <section id="dashboard" className="adminSection">
@@ -225,7 +225,7 @@ export default function AdminPage(){
       </section>
 
       <section id="slider" className="adminSection">
-        <div className="adminTitle"><div><span>HERO SLIDER</span><h2>Kelola slide beranda</h2><p>Upload gambar dari HP/laptop. Gambar akan membesar di desktop dan tetap utuh tanpa terpotong di HP.</p></div><button className="adminPrimary small" onClick={()=>{setEditingSlide(false);setSlideForm({...emptySlide,sortOrder:slides.length+1});document.getElementById('hero-editor')?.scrollIntoView({behavior:'smooth'})}}><ImagePlus/>Tambah Slide</button></div>
+        <div className="adminTitle"><div><span>HERO SLIDER</span><h2>Kelola slide beranda</h2><p>Upload desain banner jadi dari HP/laptop. Seluruh card hero akan menampilkan gambar penuh, dengan tombol WhatsApp otomatis di atas gambar.</p></div><button className="adminPrimary small" onClick={()=>{setEditingSlide(false);setSlideForm({...emptySlide,sortOrder:slides.length+1});document.getElementById('hero-editor')?.scrollIntoView({behavior:'smooth'})}}><ImagePlus/>Tambah Slide</button></div>
         {slideError&&<div className="adminAlert">{slideError}</div>}
         <div className="adminProductLayout">
           <div className="adminCatalogPanel">
@@ -235,17 +235,15 @@ export default function AdminPage(){
               <div className="adminProductInfo"><div className="adminProductMeta"><span>Urutan {s.sortOrder||0}</span></div><h3>{s.title||'Tanpa judul'}</h3><p>{s.description||'Tidak ada deskripsi'}</p></div>
               <button className={`adminStatus ${s.active===false?'off':''}`} onClick={()=>toggleSlide(s)}>{s.active===false?'Nonaktif':'Aktif'}</button>
               <div className="adminRowActions"><button onClick={()=>editSlide(s)} title="Edit"><Pencil/></button><button onClick={async()=>{if(confirm(`Hapus slide ${s.title||''}?`)){try{await deleteHeroSlide(s.id);await load()}catch{setSlideError('Slide gagal dihapus.')}}}} title="Hapus"><Trash2/></button></div>
-            </article>)}{slides.length===0&&<div className="adminEmpty">Belum ada slide dari admin. Website sementara memakai slide bawaan V10.2.</div>}</div>
+            </article>)}{slides.length===0&&<div className="adminEmpty">Belum ada slide dari admin. Upload desain banner Anda agar tampil penuh di beranda.</div>}</div>
           </div>
           <div id="hero-editor" className="adminEditor">
             <div className="adminEditorHead"><div><span>{editingSlide?'EDIT SLIDE':'SLIDE BARU'}</span><h3>{editingSlide?'Ubah slide beranda':'Tambah slide beranda'}</h3></div>{editingSlide&&<button onClick={()=>{setEditingSlide(false);setSlideForm(emptySlide)}}><X/></button>}</div>
             <form onSubmit={submitSlide}>
-              <label className="adminUpload adminHeroUpload">{slideForm.image?<img src={slideForm.image} alt="Preview slide"/>:<><ImagePlus/><b>Upload gambar slide</b><small>Disarankan 1600 × 650 px. JPG/PNG/WebP.</small></>}<input type="file" accept="image/*" onChange={e=>heroPhoto(e.target.files?.[0])}/></label>
-              <label>Judul slide<input required placeholder="Contoh: Cetak Berkualitas untuk Bisnis Anda" value={slideForm.title} onChange={e=>setSlideForm({...slideForm,title:e.target.value})}/></label>
-              <label>Deskripsi<textarea rows={3} placeholder="Teks singkat yang tampil di slide…" value={slideForm.description||''} onChange={e=>setSlideForm({...slideForm,description:e.target.value})}/></label>
+              <label className="adminUpload adminHeroUpload adminHeroUploadWide">{slideForm.image?<img src={slideForm.image} alt="Preview slide"/>:<><ImagePlus/><b>Upload desain hero</b><small>Disarankan 1600 × 650 px (rasio lebar). Desain dibuat terpisah lalu tinggal upload. JPG/PNG/WebP.</small></>}<input type="file" accept="image/*" onChange={e=>heroPhoto(e.target.files?.[0])}/></label>
               <label>Urutan<input type="number" min="1" value={slideForm.sortOrder||1} onChange={e=>setSlideForm({...slideForm,sortOrder:Number(e.target.value)})}/></label>
               <div className="adminChecks"><label><input type="checkbox" checked={slideForm.active!==false} onChange={e=>setSlideForm({...slideForm,active:e.target.checked})}/>Tampilkan slide</label></div>
-              <p className="adminHint">Tombol <b>Tanya via WhatsApp</b> tetap otomatis tersedia pada setiap slide dan tidak perlu diisi ulang.</p>
+              <p className="adminHint">Hero hanya menampilkan <b>gambar penuh</b>. Tombol <b>Tanya via WhatsApp</b> otomatis muncul di pojok kiri bawah setiap slide, jadi tidak perlu dibuat di desain.</p>
               <button className="adminPrimary" disabled={busy||!slideForm.image}>{busy?'Menyimpan…':editingSlide?'Simpan Perubahan':'Publish Slide'}</button>
               {editingSlide&&<button type="button" className="adminSecondary" onClick={()=>{setEditingSlide(false);setSlideForm(emptySlide)}}>Batal</button>}
             </form>

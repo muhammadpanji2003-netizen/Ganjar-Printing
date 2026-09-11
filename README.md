@@ -67,3 +67,17 @@ Visual-only refinement to match the approved desktop/mobile mockup more closely:
 - Admin dapat tambah/edit/hapus, upload gambar, atur urutan, link, serta aktif/nonaktifkan kategori.
 - Jalankan `SUPABASE-V1033-UPDATE.sql` satu kali agar fitur kategori dinamis aktif.
 - Jika tabel kategori belum diisi, website tetap menampilkan kategori bawaan agar beranda tidak kosong.
+
+
+## V10.3.3 Revision — Full Image Hero
+- Hero slider sekarang 100% berupa gambar/desain yang di-upload dari Admin.
+- Tidak ada judul, deskripsi, logo, kontak, atau teks website yang menutupi desain.
+- Tombol **Tanya via WhatsApp** tetap otomatis tampil sebagai overlay di pojok kiri bawah.
+- Tombol panah dan dot slider tetap tersedia.
+- Ukuran desain yang direkomendasikan: **1600 × 650 px**.
+- Tidak membutuhkan SQL Supabase baru jika SUPABASE-V103-UPDATE.sql sudah pernah dijalankan.
+
+
+### Revisi admin
+- Menambahkan tombol Logout yang selalu terlihat di header dashboard admin.
+- Tombol Keluar di sidebar tetap tersedia.
