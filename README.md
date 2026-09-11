@@ -47,3 +47,23 @@ Visual-only refinement to match the approved desktop/mobile mockup more closely:
 - Metode pembayaran dibatasi menjadi BCA, Mandiri, BRI, dan GoPay.
 - Logo Ganjar Printing diperbarui dan dipakai sebagai favicon/branding situs.
 - Data katalog Supabase yang sudah ada tidak di-reset. Jalankan SUPABASE-V103-UPDATE.sql satu kali.
+
+
+## V10.3.3 — Hero Wide
+- Hero card dibuat lebih memanjang ke samping dan lebih pendek pada desktop.
+- Logo Ganjar Printing di dalam hero slide dihapus; logo header tetap ada.
+- Tombol Tanya via WhatsApp tetap dipertahankan.
+- Gambar hero tetap menggunakan contain agar utuh dan tidak terpotong di HP.
+
+
+## V10.3.3
+- Bagian Pengiriman sekarang menampilkan logo brand untuk GoSend/Gojek, GrabExpress/Grab, JNE, J&T Express, SiCepat, dan AnterAja.
+- Bagian Metode Pembayaran menampilkan logo BCA, Bank Mandiri, BRI, dan GoPay.
+- Tidak ada perubahan schema Supabase; tidak perlu menjalankan SQL baru untuk update 10.3.2.
+
+
+## V10.3.3
+- Kategori beranda sebelum Produk Unggulan kini dapat dikelola dari `/admin`.
+- Admin dapat tambah/edit/hapus, upload gambar, atur urutan, link, serta aktif/nonaktifkan kategori.
+- Jalankan `SUPABASE-V1033-UPDATE.sql` satu kali agar fitur kategori dinamis aktif.
+- Jika tabel kategori belum diisi, website tetap menampilkan kategori bawaan agar beranda tidak kosong.

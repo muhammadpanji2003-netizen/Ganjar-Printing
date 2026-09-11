@@ -49,7 +49,6 @@ export default function HomeHero(){
       <div className="v19HeroCard v10HeroCard v103HeroCard">
         {slides.length>1&&<button className="v19Arrow left" onClick={()=>go(index-1)} aria-label="Slide sebelumnya"><ChevronLeft/></button>}
         <div className="v19HeroCopy v10HeroCopy v103HeroCopy">
-          <div className="v101HeroBrand"><img src="/ganjar-logo.png" alt="Ganjar Printing"/></div>
           <div className="v19Eyebrow">GANJAR PRINTING RAWAMANGUN</div>
           <h1>{s.title}</h1>
           {s.description&&<p>{s.description}</p>}

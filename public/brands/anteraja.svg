@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 86" role="img" aria-label="AnterAja">
+  <rect width="300" height="86" rx="12" fill="white"/>
+  <circle cx="35" cy="43" r="20" fill="#f5a623"/>
+  <path d="M27 45l10-16 9 27h-7l-2-7h-10z" fill="#202657"/>
+  <text x="65" y="55" font-family="Arial,Helvetica,sans-serif" font-size="40" font-weight="800" fill="#202657">anter</text>
+  <text x="162" y="55" font-family="Arial,Helvetica,sans-serif" font-size="40" font-weight="800" fill="#f5a623">aja</text>
+</svg>

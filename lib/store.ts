@@ -1,11 +1,12 @@
 'use client';
 import { demoProducts } from './demo';
-import { Product, Order, HeroSlide } from './types';
+import { Product, Order, HeroSlide, HomeCategory } from './types';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 const PRODUCT_KEY = 'printing_products_v1';
 const ORDER_KEY = 'printing_orders_v1';
 const HERO_KEY = 'printing_hero_slides_v103';
+const HOME_CATEGORY_KEY = 'printing_home_categories_v1033';
 
 export async function getProducts(): Promise<Product[]> {
   if (supabase) {
@@ -167,6 +168,58 @@ export async function uploadHeroImage(file:File): Promise<string> {
   if (!supabase) return URL.createObjectURL(file);
   const ext=file.name.split('.').pop() || 'jpg';
   const path=`hero/${crypto.randomUUID()}.${ext}`;
+  const { error }=await supabase.storage.from('catalog').upload(path,file,{upsert:false});
+  if(error) throw error;
+  const { data }=supabase.storage.from('catalog').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+
+function mapHomeCategory(d:any): HomeCategory {
+  return { id:d.id, name:d.name || '', image:d.image_url || '', href:d.href || '/katalog', active:d.active, sortOrder:Number(d.sort_order || 0) };
+}
+
+export async function getHomeCategories(): Promise<HomeCategory[]> {
+  if (supabase) {
+    const { data, error } = await supabase.from('home_categories').select('*').order('sort_order', { ascending: true });
+    if (!error && data) return data.map(mapHomeCategory);
+  }
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem(HOME_CATEGORY_KEY);
+    if (saved) return JSON.parse(saved);
+  }
+  return [];
+}
+
+export async function saveHomeCategory(category:HomeCategory): Promise<void> {
+  if (supabase) {
+    const { error } = await supabase.from('home_categories').upsert({
+      id:category.id, name:category.name, image_url:category.image,
+      href:category.href || '/katalog', active:category.active ?? true,
+      sort_order:category.sortOrder ?? 0
+    });
+    if (error) throw error;
+    return;
+  }
+  const list=await getHomeCategories();
+  const next=list.some(x=>x.id===category.id)?list.map(x=>x.id===category.id?category:x):[...list,category];
+  localStorage.setItem(HOME_CATEGORY_KEY,JSON.stringify(next));
+}
+
+export async function deleteHomeCategory(id:string): Promise<void> {
+  if (supabase) {
+    const { error } = await supabase.from('home_categories').delete().eq('id',id);
+    if (error) throw error;
+    return;
+  }
+  const list=await getHomeCategories();
+  localStorage.setItem(HOME_CATEGORY_KEY,JSON.stringify(list.filter(x=>x.id!==id)));
+}
+
+export async function uploadHomeCategoryImage(file:File): Promise<string> {
+  if (!supabase) return URL.createObjectURL(file);
+  const ext=file.name.split('.').pop() || 'jpg';
+  const path=`home-categories/${crypto.randomUUID()}.${ext}`;
   const { error }=await supabase.storage.from('catalog').upload(path,file,{upsert:false});
   if(error) throw error;
   const { data }=supabase.storage.from('catalog').getPublicUrl(path);

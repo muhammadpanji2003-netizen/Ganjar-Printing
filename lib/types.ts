@@ -12,6 +12,16 @@ export type Product = {
   options?: string[];
 };
 
+
+export type HomeCategory = {
+  id: string;
+  name: string;
+  image: string;
+  href?: string;
+  active?: boolean;
+  sortOrder?: number;
+};
+
 export type HeroSlide = {
   id: string;
   title: string;

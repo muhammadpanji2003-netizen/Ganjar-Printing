@@ -4,15 +4,16 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   Boxes, CheckCircle2, ChevronRight, CircleDollarSign, Eye, ImagePlus,
-  Images, LayoutDashboard, LogOut, Menu, MessageCircle, PackagePlus, Pencil,
+  Images, LayoutDashboard, LogOut, Menu, MessageCircle, PackagePlus, Pencil, Grid3X3,
   Search, ShoppingBag, Store, Trash2, X
 } from 'lucide-react';
 import {
   deleteHeroSlide, deleteProduct, getHeroSlides, getOrders, getProducts, isSupabaseConfigured,
-  saveHeroSlide, saveProduct, updateOrderStatus, uploadHeroImage, uploadProductImage
+  saveHeroSlide, saveProduct, updateOrderStatus, uploadHeroImage, uploadProductImage,
+  deleteHomeCategory, getHomeCategories, saveHomeCategory, uploadHomeCategoryImage
 } from '@/lib/store';
 import { supabase } from '@/lib/supabase';
-import { HeroSlide, Order, Product } from '@/lib/types';
+import { HeroSlide, HomeCategory, Order, Product } from '@/lib/types';
 import { isCurrentUserAdmin } from '@/lib/admin';
 
 const emptyProduct: Product = {
@@ -20,6 +21,7 @@ const emptyProduct: Product = {
   unit:'/pcs', image:'', featured:false, active:true, options:[]
 };
 const emptySlide:HeroSlide={id:'',title:'',description:'',image:'',active:true,sortOrder:1};
+const emptyHomeCategory:HomeCategory={id:'',name:'',image:'',href:'/katalog',active:true,sortOrder:1};
 const rupiah = (n:number) => `Rp${n.toLocaleString('id-ID')}`;
 const slugify = (s:string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 
@@ -27,6 +29,10 @@ export default function AdminPage(){
   const [products,setProducts] = useState<Product[]>([]);
   const [orders,setOrders] = useState<Order[]>([]);
   const [slides,setSlides] = useState<HeroSlide[]>([]);
+  const [homeCategories,setHomeCategories] = useState<HomeCategory[]>([]);
+  const [homeCategoryForm,setHomeCategoryForm] = useState<HomeCategory>(emptyHomeCategory);
+  const [editingHomeCategory,setEditingHomeCategory] = useState(false);
+  const [homeCategoryError,setHomeCategoryError] = useState('');
   const [slideForm,setSlideForm] = useState<HeroSlide>(emptySlide);
   const [editingSlide,setEditingSlide] = useState(false);
   const [slideError,setSlideError] = useState('');
@@ -43,8 +49,8 @@ export default function AdminPage(){
   const [adminChecked,setAdminChecked] = useState(false);
 
   async function load(){
-    const [p,o,h] = await Promise.all([getProducts(),getOrders(),getHeroSlides()]);
-    setProducts(p); setOrders(o); setSlides(h);
+    const [p,o,h,c] = await Promise.all([getProducts(),getOrders(),getHeroSlides(),getHomeCategories()]);
+    setProducts(p); setOrders(o); setSlides(h); setHomeCategories(c);
   }
 
   useEffect(()=>{(async()=>{
@@ -104,6 +110,24 @@ export default function AdminPage(){
   function editSlide(s:HeroSlide){setEditingSlide(true);setSlideForm(s);document.getElementById('hero-editor')?.scrollIntoView({behavior:'smooth'});}
   async function toggleSlide(s:HeroSlide){try{await saveHeroSlide({...s,active:s.active===false});await load();}catch{setSlideError('Gagal mengubah status slide. Pastikan update Supabase V10.3 sudah dijalankan.');}}
 
+
+  async function homeCategoryPhoto(file?:File){
+    if(!file)return; setBusy(true); setHomeCategoryError('');
+    try{const url=await uploadHomeCategoryImage(file);setHomeCategoryForm(f=>({...f,image:url}));}
+    catch{setHomeCategoryError('Upload gambar kategori gagal. Pastikan SUPABASE-V1033-UPDATE.sql sudah dijalankan.');}
+    finally{setBusy(false)}
+  }
+  async function submitHomeCategory(e:React.FormEvent){
+    e.preventDefault(); setBusy(true); setHomeCategoryError('');
+    try{
+      const category={...homeCategoryForm,id:homeCategoryForm.id||crypto.randomUUID(),sortOrder:Number(homeCategoryForm.sortOrder||1),href:homeCategoryForm.href||'/katalog'};
+      await saveHomeCategory(category); setHomeCategoryForm(emptyHomeCategory); setEditingHomeCategory(false); await load();
+    }catch{setHomeCategoryError('Kategori beranda belum bisa disimpan. Jalankan SUPABASE-V1033-UPDATE.sql satu kali di Supabase.');}
+    finally{setBusy(false)}
+  }
+  function editHomeCategory(c:HomeCategory){setEditingHomeCategory(true);setHomeCategoryForm(c);document.getElementById('home-category-editor')?.scrollIntoView({behavior:'smooth'});}
+  async function toggleHomeCategory(c:HomeCategory){try{await saveHomeCategory({...c,active:c.active===false});await load();}catch{setHomeCategoryError('Gagal mengubah status kategori beranda.');}}
+
   if(!sessionReady || !adminChecked) return <main className="adminLoading">Memuat dashboard…</main>;
   if(!supabase) return <main className="adminLoginPage"><div className="adminLoginCard"><img src="/ganjar-logo.png" alt="Ganjar Printing"/><p className="eyebrow2">ADMIN GANJAR PRINTING</p><h1>Admin belum diaktifkan</h1><p>Hubungkan project ke Supabase terlebih dahulu. Setelah itu, hanya akun yang ditetapkan sebagai admin yang dapat masuk ke dashboard.</p><Link href="/" className="adminPrimary">Kembali ke website</Link></div></main>;
   if(!loggedIn) return <main className="adminLoginPage"><div className="adminLoginCard"><img src="/ganjar-logo.png" alt="Ganjar Printing"/><p className="eyebrow2">ADMIN GANJAR PRINTING</p><h1>Masuk ke dashboard</h1><p>Gunakan akun admin Ganjar Printing. Pengunjung biasa tidak dapat mengakses dashboard.</p><form onSubmit={login}><label>Email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label><label>Password<input type="password" required value={password} onChange={e=>setPassword(e.target.value)}/></label>{authError&&<div className="adminAlert">{authError}</div>}<button className="adminPrimary">Masuk</button></form></div></main>;
@@ -117,6 +141,7 @@ export default function AdminPage(){
       <nav>
         <a href="#dashboard"><LayoutDashboard/>Dashboard</a>
         <a href="#produk"><Boxes/>Katalog Produk</a>
+        <a href="#kategori-beranda"><Grid3X3/>Kategori Beranda</a>
         <a href="#slider"><Images/>Hero Slider</a>
         <a href="#pesanan"><ShoppingBag/>Pesanan</a>
         <Link href="/" target="_blank"><Eye/>Lihat Website</Link>
@@ -169,6 +194,35 @@ export default function AdminPage(){
         </div>
       </section>
 
+
+
+      <section id="kategori-beranda" className="adminSection">
+        <div className="adminTitle"><div><span>BERANDA</span><h2>Kelola kategori beranda</h2><p>Atur kartu kategori yang tampil sebelum Produk Unggulan: nama, gambar, urutan, link, dan status tampil.</p></div><button className="adminPrimary small" onClick={()=>{setEditingHomeCategory(false);setHomeCategoryForm({...emptyHomeCategory,sortOrder:homeCategories.length+1});document.getElementById('home-category-editor')?.scrollIntoView({behavior:'smooth'})}}><ImagePlus/>Tambah Kategori</button></div>
+        {homeCategoryError&&<div className="adminAlert">{homeCategoryError}</div>}
+        <div className="adminProductLayout">
+          <div className="adminCatalogPanel">
+            <div className="adminCatalogTop"><b>{homeCategories.length} kategori</b><span>Urutan kecil tampil lebih dulu</span></div>
+            <div className="adminProductList">{[...homeCategories].sort((a,b)=>(a.sortOrder??0)-(b.sortOrder??0)).map(c=><article key={c.id} className="adminProductRow">
+              <div className="adminProductThumb">{c.image?<img src={c.image} alt=""/>:<ImagePlus/>}</div>
+              <div className="adminProductInfo"><div className="adminProductMeta"><span>Urutan {c.sortOrder||0}</span></div><h3>{c.name}</h3><p>{c.href||'/katalog'}</p></div>
+              <button className={`adminStatus ${c.active===false?'off':''}`} onClick={()=>toggleHomeCategory(c)}>{c.active===false?'Disembunyikan':'Tampil'}</button>
+              <div className="adminRowActions"><button onClick={()=>editHomeCategory(c)} title="Edit"><Pencil/></button><button onClick={async()=>{if(confirm(`Hapus kategori ${c.name}?`)){try{await deleteHomeCategory(c.id);await load()}catch{setHomeCategoryError('Kategori gagal dihapus.')}}}} title="Hapus"><Trash2/></button></div>
+            </article>)}{homeCategories.length===0&&<div className="adminEmpty">Belum ada kategori dari admin. Website sementara memakai kategori bawaan agar tampilan beranda tidak kosong.</div>}</div>
+          </div>
+          <div id="home-category-editor" className="adminEditor">
+            <div className="adminEditorHead"><div><span>{editingHomeCategory?'EDIT KATEGORI':'KATEGORI BARU'}</span><h3>{editingHomeCategory?'Ubah kategori beranda':'Tambah kategori beranda'}</h3></div>{editingHomeCategory&&<button onClick={()=>{setEditingHomeCategory(false);setHomeCategoryForm(emptyHomeCategory)}}><X/></button>}</div>
+            <form onSubmit={submitHomeCategory}>
+              <label className="adminUpload">{homeCategoryForm.image?<img src={homeCategoryForm.image} alt="Preview kategori"/>:<><ImagePlus/><b>Upload gambar kategori</b><small>Bisa pilih langsung dari galeri HP. Disarankan gambar landscape/square yang jelas.</small></>}<input type="file" accept="image/*" onChange={e=>homeCategoryPhoto(e.target.files?.[0])}/></label>
+              <label>Nama kategori<input required placeholder="Contoh: Banner" value={homeCategoryForm.name} onChange={e=>setHomeCategoryForm({...homeCategoryForm,name:e.target.value})}/></label>
+              <label>Link saat diklik<input placeholder="/katalog" value={homeCategoryForm.href||'/katalog'} onChange={e=>setHomeCategoryForm({...homeCategoryForm,href:e.target.value})}/><small>Untuk sementara gunakan <b>/katalog</b> jika ingin menuju halaman katalog.</small></label>
+              <label>Urutan<input type="number" min="1" value={homeCategoryForm.sortOrder||1} onChange={e=>setHomeCategoryForm({...homeCategoryForm,sortOrder:Number(e.target.value)})}/></label>
+              <div className="adminChecks"><label><input type="checkbox" checked={homeCategoryForm.active!==false} onChange={e=>setHomeCategoryForm({...homeCategoryForm,active:e.target.checked})}/>Tampilkan di beranda</label></div>
+              <button className="adminPrimary" disabled={busy||!homeCategoryForm.image}>{busy?'Menyimpan…':editingHomeCategory?'Simpan Perubahan':'Publish Kategori'}</button>
+              {editingHomeCategory&&<button type="button" className="adminSecondary" onClick={()=>{setEditingHomeCategory(false);setHomeCategoryForm(emptyHomeCategory)}}>Batal</button>}
+            </form>
+          </div>
+        </div>
+      </section>
 
       <section id="slider" className="adminSection">
         <div className="adminTitle"><div><span>HERO SLIDER</span><h2>Kelola slide beranda</h2><p>Upload gambar dari HP/laptop. Gambar akan membesar di desktop dan tetap utuh tanpa terpotong di HP.</p></div><button className="adminPrimary small" onClick={()=>{setEditingSlide(false);setSlideForm({...emptySlide,sortOrder:slides.length+1});document.getElementById('hero-editor')?.scrollIntoView({behavior:'smooth'})}}><ImagePlus/>Tambah Slide</button></div>
